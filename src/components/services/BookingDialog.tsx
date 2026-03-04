@@ -155,14 +155,12 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
 
       if (error.code === "42501") {
         setBookingError(
-          "You are not allowed to book an appointment. Please contact support for assistance.",
+          "You are not allowed to book an appointment. Please contact me on email for assistance.",
         );
         return;
       }
 
-      setBookingError(
-        error.message || "Something went wrong while booking your appointment.",
-      );
+      setBookingError("Something went wrong while booking your appointment.");
     },
   });
 
@@ -329,8 +327,8 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
             </p>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              The salon will review your request and send you a confirmation
-              email once approved.
+              I will review your request and send you a confirmation email once
+              approved.
             </p>
 
             <p className="mt-1 text-xs text-muted-foreground/70">

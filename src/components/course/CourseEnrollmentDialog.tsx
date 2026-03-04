@@ -224,8 +224,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
             </div>
 
             <p className="mt-4 text-xs text-muted-foreground">
-              If you have any questions, feel free to reply to your confirmation
-              email.
+              If you have any questions, feel free to contact me on email.
             </p>
           </div>
         ) : (
