@@ -19,6 +19,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === "SIGNED_IN" && session?.user) {
+          await supabase.rpc("link_user_appointments");
+        }
+      },
+    );
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const run = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session?.user) {
+        await supabase.rpc("link_user_appointments");
+      }
+    };
+
+    run();
+  }, []);
+
+  useEffect(() => {
     const getUserWithAvatar = async (supabaseUser: any) => {
       if (!supabaseUser) return null;
 
@@ -54,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const userWithAvatar = await getUserWithAvatar(session?.user ?? null);
           setUser(userWithAvatar);
         })();
-      }
+      },
     );
 
     return () => listener.subscription.unsubscribe();
