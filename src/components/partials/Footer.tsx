@@ -1,5 +1,4 @@
 import Logo from "@/assets/logo.png";
-import { scrollToTop } from "@/lib/utils";
 import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
@@ -164,7 +163,6 @@ const Footer = () => {
           <Link to="/services">
             <Button
               title="Book an appointment"
-              onClick={scrollToTop}
               size="lg"
               className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-8 mt-4 w-full"
             >
