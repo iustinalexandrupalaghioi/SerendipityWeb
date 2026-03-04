@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import CheckoutButton from "../partials/CheckoutButton";
 import { Badge } from "../ui/badge";
+import CancelAppointmentDialog from "./CancelAppointmentDialog";
 
 const statusStyles: Record<
   AppointmentStatus,
@@ -155,17 +156,24 @@ const AppointmentsTabContent = () => {
                             )}
                           </p>
                         )}
-                      {!apt.advance_payment_paid &&
-                        (apt.status === "approved" ||
+                      <div className="flex items-center gap-2 mt-2">
+                        {!apt.advance_payment_paid &&
+                          (apt.status === "approved" ||
+                            apt.status === "confirmed") && (
+                            <CheckoutButton
+                              className="bg-accent text-accent-foreground hover:bg-accent/90 "
+                              id={apt.id}
+                              size="sm"
+                              text="Confirm appointment (Pay)"
+                              type="appointment"
+                            />
+                          )}
+                        {(apt.status === "pending" ||
+                          apt.status === "approved" ||
                           apt.status === "confirmed") && (
-                          <CheckoutButton
-                            className="bg-accent text-accent-foreground hover:bg-accent/90 mt-2"
-                            id={apt.id}
-                            size="sm"
-                            text="Confirm appointment (Pay)"
-                            type="appointment"
-                          />
+                          <CancelAppointmentDialog id={apt.id} />
                         )}
+                      </div>
                     </div>
                   </div>
                 </div>
