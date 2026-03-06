@@ -18,17 +18,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "SIGNED_IN" && session?.user) {
-          await supabase.rpc("link_user_appointments");
-        }
-      },
-    );
+  // useEffect(() => {
+  //   const { data: listener } = supabase.auth.onAuthStateChange(
+  //     async (event, session) => {
+  //       if (event === "SIGNED_IN" && session?.user) {
+  //         await supabase.rpc("link_user_appointments");
+  //       }
+  //     },
+  //   );
 
-    return () => listener.subscription.unsubscribe();
-  }, []);
+  //   return () => listener.subscription.unsubscribe();
+  // }, []);
 
   useEffect(() => {
     const getUserWithAvatar = async (supabaseUser: any) => {
