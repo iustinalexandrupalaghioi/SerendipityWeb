@@ -31,20 +31,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    const run = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session?.user) {
-        await supabase.rpc("link_user_appointments");
-      }
-    };
-
-    run();
-  }, []);
-
-  useEffect(() => {
     const getUserWithAvatar = async (supabaseUser: any) => {
       if (!supabaseUser) return null;
 
