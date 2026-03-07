@@ -29,6 +29,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Mail, LockIcon, Eye, EyeOff } from "lucide-react";
+import google from "@/assets/google-icon-logo.svg";
 import Logo from "@/assets/logo.png";
 
 const loginSchema = z.object({
@@ -66,6 +67,15 @@ export function LoginForm({
       navigate(from);
     },
   });
+
+  const loginWithGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+  };
 
   const onSubmit = (values: LoginFormValues) => {
     loginMutation.mutate(values);
@@ -183,6 +193,25 @@ export function LoginForm({
                 disabled={loginMutation.isPending}
               >
                 {loginMutation.isPending ? "Logging in..." : "Login"}
+              </Button>
+
+              {/* Divider */}
+              <div className="relative text-center text-sm">
+                <span className="bg-background px-2 text-muted-foreground relative z-10">
+                  or continue with
+                </span>
+                <div className="absolute inset-0 top-1/2 border-t"></div>
+              </div>
+
+              {/* Google Login */}
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full hover:bg-muted"
+                onClick={loginWithGoogle}
+              >
+                <img className="h-4 w-4" src={google} />
+                Continue with Google
               </Button>
 
               <div className="mt-4 text-center text-sm">
