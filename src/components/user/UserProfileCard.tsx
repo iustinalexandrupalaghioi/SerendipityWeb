@@ -44,8 +44,16 @@ export default function UserProfileCard() {
                 <div className="flex items-start justify-between flex-col gap-2 md:flex-row">
                   <div>
                     <h2 className="font-serif text-2xl font-bold text-card-foreground">
-                      {user?.user_metadata.first_name}{" "}
-                      {user?.user_metadata.last_name}
+                      {user?.user_metadata.first_name &&
+                      user.user_metadata.last_name ? (
+                        <span>
+                          {user?.user_metadata.first_name}{" "}
+                          {user?.user_metadata.last_name}
+                        </span>
+                      ) : (
+                        user?.user_metadata.full_name &&
+                        user?.user_metadata.full_name
+                      )}
                     </h2>
                     <p className="text-sm text-muted-foreground">
                       {user?.email}
