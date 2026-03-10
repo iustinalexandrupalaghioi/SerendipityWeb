@@ -5,27 +5,21 @@ import { supabase } from "@/lib/supabaseClient";
 import type { Service } from "@/types/Service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import {
-  ArrowLeft,
-  ArrowRight,
-  CalendarIcon,
-  CheckIcon,
-  XIcon,
-} from "lucide-react";
+import { CalendarIcon, CheckIcon, LogInIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
 import { BookingCalendar } from "./BookingCalendar";
-import BookingForm from "./BookingForm";
 
 interface BookingDialogProps {
   service: Service;
@@ -34,55 +28,44 @@ interface BookingDialogProps {
 const BookingDialog = ({ service }: BookingDialogProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  /* -------------------- STATE -------------------- */
+  const params = new URLSearchParams(location.search);
+
+  /* ---------------- STATE ---------------- */
+
   const [submitted, setSubmitted] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [step, setStep] = useState(1);
 
   const [date, setDate] = useState<Date | undefined>();
   const [time, setTime] = useState<string | undefined>("");
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState<{ date?: string }>({});
 
-  const [errors, setErrors] = useState<{
-    date?: string;
-    name?: string;
-    email?: string;
-  }>({});
+  /* ---------------- RESTORE SLOT AFTER LOGIN ---------------- */
 
-  /* -------------------- MUTATION -------------------- */
+  useEffect(() => {
+    const savedService = params.get("service");
+    const savedDate = params.get("date");
+    const savedTime = params.get("time");
+
+    if (savedService === service.id && savedDate && savedTime) {
+      setDate(new Date(savedDate));
+      setTime(savedTime);
+      setOpen(true);
+    }
+  }, [location.search]);
+
+  /* ---------------- FETCH BOOKED DATES ---------------- */
 
   const { data: bookedDates } = useFullyBookedDates({
     serviceDuration: service.duration,
     enabled: true,
   });
 
-  useEffect(() => {
-    if (!bookedDates || bookedDates.length === 0) return;
-
-    const today = new Date();
-    const isTodayBooked = bookedDates.some(
-      (d) => format(new Date(d), "yyyy-MM-dd") === format(today, "yyyy-MM-dd"),
-    );
-
-    if (isTodayBooked && (!date || date === today)) {
-      // find the next available date
-      let nextDate = new Date(today);
-      while (
-        bookedDates.some(
-          (d) =>
-            format(new Date(d), "yyyy-MM-dd") ===
-            format(nextDate, "yyyy-MM-dd"),
-        )
-      ) {
-        nextDate.setDate(nextDate.getDate() + 1);
-      }
-      setDate(nextDate);
-    }
-  }, [bookedDates, date]);
+  /* ---------------- AVAILABLE HOURS ---------------- */
 
   const {
     data: timeSlots,
@@ -94,10 +77,12 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
     enabled: true,
   });
 
+  /* ---------------- MUTATION ---------------- */
+
   const addAppointmentMutation = useMutation({
     mutationFn: async (values: {
       service_id: string;
-      user_id: string | null;
+      user_id: string;
       name: string;
       email: string;
       date: string;
@@ -141,78 +126,50 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
-
       setSubmitted(true);
     },
 
     onError: (error: any) => {
       if (error.code === "23505") {
         setBookingError(
-          "You already have an active appointment. Please wait for it to be confirmed or cancel it before booking a new one.",
+          "You already have an active appointment. Please wait until it is confirmed or cancel it.",
         );
         return;
       }
 
-      if (error.code === "42501") {
-        setBookingError(
-          "You are not allowed to book an appointment. Please contact me on email for assistance.",
-        );
-        return;
-      }
-
-      setBookingError("Something went wrong while booking your appointment.");
+      setBookingError("Something went wrong while booking.");
     },
   });
 
-  /* -------------------- DERIVED -------------------- */
-
-  const isFirstStep = step === 1;
-  const isSecondStep = step === 2;
-  const isLoggedIn = !!user;
-
-  const isNextDisabled =
-    addAppointmentMutation.isPending || (isFirstStep && (!date || !time));
-
-  /* -------------------- VALIDATION -------------------- */
+  /* ---------------- VALIDATION ---------------- */
 
   const validateStep = () => {
     const newErrors: typeof errors = {};
 
-    if (!date) newErrors.date = "Please select a date.";
-    if (!time) newErrors.date = "Please select a time.";
-
-    if (isSecondStep && !isLoggedIn) {
-      if (!name.trim()) newErrors.name = "Full name is required.";
-
-      if (!email.trim()) {
-        newErrors.email = "Email is required.";
-      } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-        newErrors.email = "Invalid email format.";
-      }
+    if (!date || !time) {
+      newErrors.date = "Please select a date and time.";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  /* -------------------- BOOKING -------------------- */
+  /* ---------------- BOOKING ---------------- */
 
   const bookAppointment = () => {
-    if (!date || !time) return;
+    if (!date || !time || !user) return;
 
     const formattedDate = format(date, "yyyy-MM-dd");
 
-    const fullName = user
-      ? `${user.user_metadata?.first_name ?? ""} ${
-          user.user_metadata?.last_name ?? ""
-        }`.trim()
-      : name;
+    const fullName = `${user.user_metadata?.first_name ?? ""} ${
+      user.user_metadata?.last_name ?? ""
+    }`.trim();
 
     addAppointmentMutation.mutate({
       service_id: service.id,
-      user_id: user?.id ?? null,
+      user_id: user.id,
       name: fullName,
-      email: user?.email ?? email,
+      email: user.email!,
       date: formattedDate,
       start_time: time,
       duration: service.duration,
@@ -220,61 +177,30 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
     });
   };
 
-  /* -------------------- PRIMARY ACTION -------------------- */
+  /* ---------------- CONFIRM BUTTON ---------------- */
 
-  const handlePrimaryAction = () => {
+  const handleConfirm = () => {
     if (!validateStep()) return;
 
-    // Logged in → book immediately
-    if (isLoggedIn && isFirstStep) {
-      bookAppointment();
+    if (!user) {
+      toast.info("Please log in to confirm your booking.");
+      navigate(`/auth/login`);
       return;
     }
 
-    // Guest → go to step 2
-    if (!isLoggedIn && isFirstStep) {
-      setStep(2);
-      return;
-    }
-
-    // Guest step 2 → book
-    if (!isLoggedIn && isSecondStep) {
-      bookAppointment();
-    }
+    bookAppointment();
   };
 
-  const handleBack = () => setStep((prev) => prev - 1);
-
-  /* -------------------- RESET ON OPEN -------------------- */
+  /* ---------------- RESET ---------------- */
 
   useEffect(() => {
     if (!open) return;
 
-    setStep(1);
-    setDate(undefined);
-    setTime("");
-    setName("");
-    setEmail("");
-    setErrors({});
     setSubmitted(false);
-    setBookingError("");
+    setBookingError(null);
   }, [open]);
 
-  /* -------------------- LABEL -------------------- */
-
-  const primaryLabel =
-    isFirstStep && !isLoggedIn ? (
-      <>
-        Next <ArrowRight className="ml-1 h-4 w-4" />
-      </>
-    ) : (
-      <>
-        <CheckIcon className="mr-1 h-4 w-4" />
-        Confirm
-      </>
-    );
-
-  /* -------------------- UI -------------------- */
+  /* ---------------- UI ---------------- */
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -289,26 +215,24 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
         {bookingError ? (
           <div className="flex flex-col items-center py-8 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/20">
-              <XIcon className="h-8 w-8 text-destructive" />
+              <CalendarIcon className="h-8 w-8 text-destructive" />
             </div>
-
-            <h3 className="mt-4 font-serif text-xl font-bold text-card-foreground">
-              Booking Failed
-            </h3>
 
             <p className="mt-2 text-sm text-muted-foreground">{bookingError}</p>
 
-            <div className="mt-6 flex w-full gap-2">
+            <div className="mt-6 flex gap-4 w-full">
               <Button
-                variant="outline"
+                variant="secondary"
+                onClick={() => navigate("/services")}
                 className="flex-1"
-                onClick={() => setBookingError(null)}
               >
-                Try Again
+                Browse services
               </Button>
-
-              <Button className="flex-1" onClick={() => setOpen(false)}>
-                Close
+              <Button
+                onClick={() => navigate("/profile/appointments")}
+                className="flex-1"
+              >
+                My appointments
               </Button>
             </div>
           </div>
@@ -335,71 +259,63 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
               Payment will be requested only after approval.
             </p>
 
-            <Button
-              variant="outline"
-              className="mt-6 w-full"
-              onClick={() => setOpen(false)}
-            >
-              Close
-            </Button>
+            <div className="mt-6 flex gap-4 w-full">
+              <Button
+                variant="secondary"
+                onClick={() => navigate("/services")}
+                className="flex-1"
+              >
+                Browse services
+              </Button>
+              <Button
+                onClick={() => navigate("/profile/appointments")}
+                className="flex-1"
+              >
+                My appointments
+              </Button>
+            </div>
           </div>
         ) : (
           <>
-            <DialogHeader className="text-start">
-              <DialogTitle className="text-primary">
-                Schedule your appointment
-              </DialogTitle>
-              <DialogDescription className="hidden">
-                Select a date and time for your appointment.
-              </DialogDescription>
+            <DialogHeader>
+              <DialogTitle>Schedule your appointment</DialogTitle>
             </DialogHeader>
 
-            {isFirstStep && (
-              <BookingCalendar
-                bookedDates={bookedDates}
-                errors={error}
-                isLoading={isLoading}
-                slots={timeSlots}
-                date={date}
-                setDate={setDate}
-                time={time}
-                setTime={setTime}
-              />
-            )}
+            <BookingCalendar
+              bookedDates={bookedDates}
+              errors={error}
+              isLoading={isLoading}
+              slots={timeSlots}
+              date={date}
+              setDate={setDate}
+              time={time}
+              setTime={setTime}
+            />
 
             {errors.date && (
-              <p className="text-sm text-destructive mt-2">{errors.date}</p>
+              <p className="text-sm text-destructive">{errors.date}</p>
             )}
 
-            {isSecondStep && !isLoggedIn && (
-              <BookingForm
-                name={name}
-                email={email}
-                onNameChange={setName}
-                onEmailChange={setEmail}
-                errors={errors}
-              />
-            )}
-
-            <DialogFooter className="flex w-full flex-col gap-2 md:flex-row-reverse md:justify-start">
+            <DialogFooter className="flex flex-col md:flex-row-reverse w-full md:justify-start gap-2">
               <Button
-                disabled={isNextDisabled}
-                onClick={handlePrimaryAction}
+                disabled={addAppointmentMutation.isPending}
+                onClick={handleConfirm}
                 className="w-full md:w-auto"
               >
-                {addAppointmentMutation.isPending ? "Booking..." : primaryLabel}
+                {addAppointmentMutation.isPending ? (
+                  "Booking..."
+                ) : user ? (
+                  <>
+                    <CheckIcon className="h-4 w-4" />
+                    Confirm booking
+                  </>
+                ) : (
+                  <>
+                    <LogInIcon className="h-4 w-4" />
+                    Login to confirm
+                  </>
+                )}
               </Button>
-
-              {!isLoggedIn && isSecondStep && (
-                <Button
-                  variant="outline"
-                  onClick={handleBack}
-                  className="w-full md:w-auto"
-                >
-                  <ArrowLeft className="mr-1 h-4 w-4" />
-                  Back
-                </Button>
-              )}
 
               <DialogClose asChild>
                 <Button variant="secondary" className="w-full md:w-auto">

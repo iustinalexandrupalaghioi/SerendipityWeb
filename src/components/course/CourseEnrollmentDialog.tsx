@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import type { Course } from "@/types/Course";
 import { SimpleCalendarInput } from "../partials/SimpleCalendarInput";
 import CheckoutButton from "../partials/CheckoutButton";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 interface Props {
   course: Course;
@@ -53,7 +54,15 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
+  const [paymentType, setPaymentType] = useState<"deposit" | "full">("deposit");
+  const [paymentAmount, setPaymentAmount] = useState(course.advance_price);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setPaymentAmount(
+      paymentType === "full" ? course.price : course.advance_price,
+    );
+  }, [paymentType]);
 
   const hundredYearsAgo = useMemo(() => {
     return new Date(new Date().getFullYear() - 100, 0, 1);
@@ -98,6 +107,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
         course_date: course.start_date,
         price: Number(course.price),
         advance_price: Number(course.advance_price),
+        payment_type: paymentType,
       })
       .select()
       .single();
@@ -206,9 +216,9 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
             </p>
 
             <p className="mt-3 text-sm text-muted-foreground">
-              To reserve your spot, please complete the advance payment of{" "}
+              To reserve your spot, please complete the payment of{" "}
               <span className="font-semibold text-primary">
-                € {course.advance_price}
+                € {paymentAmount}
               </span>
               .
             </p>
@@ -218,7 +228,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
                 <CheckoutButton
                   id={enrollmentId}
                   type="enrollment"
-                  text={`Confirm enrollment - € ${course.advance_price}`}
+                  text={`Confirm enrollment - € ${paymentAmount}`}
                 />
               )}
             </div>
@@ -271,6 +281,38 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
               />
               {errors.dob && (
                 <p className="text-sm text-destructive">{errors.dob}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label>Payment type</Label>
+
+              <RadioGroup
+                value={paymentType}
+                onValueChange={(value: "deposit" | "full") =>
+                  setPaymentType(value)
+                }
+                className="space-y-2"
+              >
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="deposit" id="pay-advance" />
+                  <Label htmlFor="pay-advance">
+                    Advance payment (€ {course.advance_price})
+                  </Label>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value="full" id="pay-full" />
+                  <Label htmlFor="pay-full">
+                    Full amount (€ {course.price})
+                  </Label>
+                </div>
+              </RadioGroup>
+
+              {errors.payFullAmount && (
+                <p className="text-sm text-destructive">
+                  {errors.payFullAmount}
+                </p>
               )}
             </div>
 

@@ -109,8 +109,8 @@ const EnrollmentsTabContent = () => {
                             className="bg-accent text-accent-foreground hover:bg-accent/90 mt-2"
                             id={enr.id}
                             size="sm"
-                            text="Confirm enrollment (Pay)"
                             type="enrollment"
+                            text={`Confirm enrollment - € ${enr.payment_type === "deposit" ? enr.advance_price : enr.price}`}
                           />
                         )}
                     </div>

@@ -4,15 +4,15 @@ import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 import SignupSuccess from "./pages/Auth/SignupSuccess";
 import UpdatePassword from "./pages/Auth/UpdatePassword";
+import UserProfile from "./pages/Auth/UserProfile";
+import AboutPage from "./pages/Client/AboutPage";
+import CourseDetailsPage from "./pages/Client/CourseDetailsPage";
+import CoursesPage from "./pages/Client/CoursesPage";
+import LandingPage from "./pages/Client/LandingPage";
+import ServicesPage from "./pages/Client/ServicesPage";
 import ErrorPage from "./pages/Error";
 import Layout from "./pages/Layout";
 import ProtectedRoute from "./pages/Protected/ProtectedRoute";
-import UserProfile from "./pages/Auth/UserProfile";
-import LandingPage from "./pages/Client/LandingPage";
-import AboutPage from "./pages/Client/AboutPage";
-import ServicesPage from "./pages/Client/ServicesPage";
-import CoursesPage from "./pages/Client/CoursesPage";
-import CourseDetailsPage from "./pages/Client/CourseDetailsPage";
 
 function App() {
   return (
@@ -24,7 +24,6 @@ function App() {
       <Route path="auth/signup-success" element={<SignupSuccess />} />
       <Route path="auth/forgot-password" element={<ForgotPassword />} />
       <Route path="auth/update-password" element={<UpdatePassword />} />
-
       {/* Protected Routes */}
 
       <Route element={<Layout />}>

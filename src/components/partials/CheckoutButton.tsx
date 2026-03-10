@@ -7,6 +7,7 @@ import { BanknoteIcon } from "lucide-react";
 interface CheckoutButtonProps {
   id: string;
   type: "appointment" | "enrollment";
+  pay_full_amount?: boolean; // Optional, in case you want to specify if it's a full payment or not
   text?: string;
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
@@ -22,7 +23,7 @@ const CheckoutButton = ({
   const [loading, setLoading] = useState(false);
 
   const handlePay = async () => {
-    if (loading) return; // prevent double click
+    if (loading) return;
     setLoading(true);
 
     try {
