@@ -4,8 +4,8 @@ import { useState } from "react";
 import userImage from "@/assets/user.webp";
 import { Button } from "@/components/ui/button";
 import { Edit3 } from "lucide-react";
-import UpdateUserProfileForm from "./UpdateUserProfileForm";
 import { format } from "date-fns";
+import UpdateUserProfileForm from "./UpdateUserProfileForm";
 export interface FormData {
   firstName: string;
   lastName: string;

@@ -1,8 +1,8 @@
 import { Calendar, GraduationCap } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import AppointmentsTabContent from "./AppointmentsTabContent";
-import EnrollmentsTabContent from "./EnrollmentsTabContent";
 import { useNavigate, useParams } from "react-router";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AppointmentsTabContent from "./appointments/AppointmentsTabContent";
+import EnrollmentsTabContent from "./enrollments/EnrollmentsTabContent";
 
 const UserProfileTabs = () => {
   const { tab } = useParams();

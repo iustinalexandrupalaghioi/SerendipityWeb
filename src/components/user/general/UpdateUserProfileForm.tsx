@@ -7,8 +7,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Loader2Icon, CameraIcon } from "lucide-react";
-import Loader from "../ui/loader";
-import { FormCalendar } from "../partials/FormCalendar";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +17,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import Loader from "@/components/ui/loader";
+import { FormCalendar } from "@/components/partials/FormCalendar";
 
 const profileSchema = z.object({
   firstName: z.string().min(1, "First name is required"),

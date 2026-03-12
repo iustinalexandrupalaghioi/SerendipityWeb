@@ -6,14 +6,12 @@ import {
   ArrowLeft,
   BarChart3,
   CalendarDays,
-  CheckCircleIcon,
   Clock,
-  EuroIcon,
   Users,
 } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router";
-import { Card, CardContent } from "../ui/card";
 import Loader from "../ui/loader";
+import CourseDayCard from "./CourseDayCard";
 import { CourseEnrollmentDialog } from "./CourseEnrollmentDialog";
 
 export default function CourseDetails() {
@@ -43,9 +41,12 @@ export default function CourseDetails() {
             </Link>
 
             <div className="flex flex-wrap items-center gap-3">
-              <Badge variant="default" className="bg-accent/80">
-                {course?.level}
+              <Badge variant="default" className="bg-accent/80 capitalize">
+                Level: {course?.level}
               </Badge>
+              {!course?.is_open && (
+                <Badge variant="destructive">Not available</Badge>
+              )}
 
               {course?.is_open && course?.remaining_spots <= 3 && (
                 <Badge
@@ -75,24 +76,28 @@ export default function CourseDetails() {
                 <BarChart3 className="h-4 w-4 text-accent" />
                 {course?.level}
               </span>
-              <span className="flex items-center gap-2">
-                <CalendarDays className="h-4 w-4 text-accent" />
-                Starts{" "}
-                {course?.start_date && format(course.start_date, "dd-MMM-yyyy")}
-              </span>
-              <span className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-accent" />
-                {course?.remaining_spots} of {course?.available_spots} spots
-                left
-              </span>
+              {course?.is_open && (
+                <>
+                  <span className="flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-accent" />
+                    Starts{" "}
+                    {course?.start_date &&
+                      format(course.start_date, "dd-MMM-yyyy")}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-accent" />
+                    {course?.remaining_spots} of {course?.available_spots} spots
+                    left
+                  </span>
+                </>
+              )}
               <span className="flex items-center gap-2 font-semibold text-accent">
-                <EuroIcon className="h-4 w-4" />
-                {course?.price}
+                € {course?.price}
               </span>
             </div>
 
             <div className="mt-8 max-w-xs">
-              {course && <CourseEnrollmentDialog course={course} />}
+              {course?.is_open && <CourseEnrollmentDialog course={course} />}
             </div>
           </div>
 
@@ -127,44 +132,7 @@ export default function CourseDetails() {
 
               <div className="mt-6 flex flex-col gap-4">
                 {course?.course_day?.map((day, index) => (
-                  <Card key={index} className="overflow-hidden ">
-                    <CardContent className="flex flex-col md:flex-row">
-                      <div className="md:w-40 h-40 shrink-0 mb-4 md:mb-0">
-                        <img
-                          src={day.image_url}
-                          alt={day.title}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      </div>
-
-                      <div className="flex-1 md:pl-6">
-                        <div className="flex flex-col items-start gap-3 mb-3">
-                          <Badge
-                            variant="outline"
-                            className="bg-primary/10 text-primary border-primary/20"
-                          >
-                            Day {day.day_number}
-                          </Badge>
-                          <h3 className="text font-semibold">{day.title}</h3>
-                        </div>
-                        <ul className="space-y-2">
-                          {!error &&
-                            !isLoading &&
-                            day.course_day_activity?.map((activity) => (
-                              <li
-                                key={activity.id}
-                                className="flex items-center gap-3 text-foreground/80"
-                              >
-                                <CheckCircleIcon className="w-4 h-4 shrink-0 text-primary self-start mt-0.5" />
-                                <span className="text-sm whitespace-pre-line">
-                                  {activity.activity}
-                                </span>
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <CourseDayCard day={day} index={index} key={day.id} />
                 ))}
               </div>
             </div>
@@ -178,9 +146,8 @@ export default function CourseDetails() {
                 </p>
 
                 {/* Full Price */}
-                <p className="mt-3 font-serif text-4xl font-bold text-card-foreground flex items-center">
-                  <EuroIcon />
-                  {course?.price}
+                <p className="mt-3 font-sans text-4xl font-bold text-card-foreground flex items-center">
+                  € {course?.price}
                 </p>
 
                 {/* Advance Required */}
@@ -190,8 +157,7 @@ export default function CourseDetails() {
                       Secure your seat with
                     </p>
                     <p className="text-xl font-semibold text-accent flex items-center">
-                      <EuroIcon />
-                      {course?.advance_price} deposit
+                      € {course?.advance_price} deposit
                     </p>
                   </div>
                 )}
@@ -199,28 +165,30 @@ export default function CourseDetails() {
                 {/* Remaining */}
                 {course?.advance_price && (
                   <p className="mt-3 text-sm text-muted-foreground">
-                    Remaining balance:{" "}
+                    Pay the rest later:{" "}
                     <span className="flex items-center">
-                      <EuroIcon className="h-4 w-4" />
-                      {course?.price - course?.advance_price}
+                      € {course?.price - course?.advance_price}
                     </span>
                   </p>
                 )}
 
-                <div className="mt-6">
-                  <CourseEnrollmentDialog
-                    className="bg-primary text-primary-foreground hover:bg-primary/90"
-                    course={course!}
-                  />
-                </div>
-
-                <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
-                  <Users className="h-4 w-4 text-accent" />
-                  <span>
-                    {course?.remaining_spots} of {course?.available_spots} spots
-                    remaining
-                  </span>
-                </div>
+                {course?.is_open && (
+                  <>
+                    <div className="mt-6">
+                      <CourseEnrollmentDialog
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
+                        course={course!}
+                      />
+                    </div>
+                    <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Users className="h-4 w-4 text-accent" />
+                      <span>
+                        {course?.remaining_spots} of {course?.available_spots}{" "}
+                        spots remaining
+                      </span>
+                    </div>{" "}
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -1,4 +1,3 @@
-import CertificatesSection from "@/components/presentation/CertificatesSection";
 import { CallToActionSection } from "@/components/presentation/CallToActionSection";
 import { FeaturesSection } from "@/components/presentation/FeaturesSection";
 import HeroSection from "@/components/presentation/HeroSection";
@@ -11,7 +10,6 @@ const LandingPage = () => {
       <FeaturesSection />
       <ServicesPreview />
       <CallToActionSection />
-      <CertificatesSection />
     </>
   );
 };

@@ -1,10 +1,14 @@
+import FacebookIcon from "@/assets/facebook.svg";
+import InstagramIcon from "@/assets/instagram.svg";
 import Logo from "@/assets/logo.png";
-import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
-import { useQuery } from "@tanstack/react-query";
+import TikTokIcon from "@/assets/tiktok.svg";
 import { supabase } from "@/lib/supabaseClient";
 import type { BusinessHour } from "@/types/BusinessHour";
+import { useQuery } from "@tanstack/react-query";
+import { Mail, MapPin, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
+
 const Footer = () => {
   const { data, error, isLoading } = useQuery<BusinessHour[]>({
     queryKey: ["business-hours"],
@@ -42,18 +46,25 @@ const Footer = () => {
             </p>
             <div className="mt-6 flex gap-4">
               <a
-                href="#"
+                href={import.meta.env.VITE_INSTAGRAM_URL}
+                target="_blank"
                 aria-label="Instagram"
-                className="text-foreground/60 transition-colors hover:text-accent"
               >
-                <Instagram className="h-5 w-5" />
+                <img src={InstagramIcon} className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href={import.meta.env.VITE_FACEBOOK_URL}
+                target="_blank"
                 aria-label="Facebook"
-                className="text-foreground/60 transition-colors hover:text-accent"
               >
-                <Facebook className="h-5 w-5" />
+                <img src={FacebookIcon} className="h-5 w-5" />
+              </a>
+              <a
+                href={import.meta.env.VITE_TIKTOK_URL}
+                target="_blank"
+                aria-label="TikTok"
+              >
+                <img src={TikTokIcon} className="h-5 w-5" />
               </a>
             </div>
           </div>

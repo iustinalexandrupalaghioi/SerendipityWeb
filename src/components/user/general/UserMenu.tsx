@@ -1,4 +1,5 @@
 import userImage from "@/assets/user.webp";
+import { LogoutButton } from "@/components/authentication/LogoutButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -10,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router";
-import { LogoutButton } from "../authentication/LogoutButton";
 
 const UserMenu = () => {
   const { user } = useAuth();

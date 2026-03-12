@@ -1,12 +1,12 @@
 import Logo from "@/assets/logo.png";
 import { AuthButton } from "@/components/authentication/AuthButton";
 import { Button } from "@/components/ui/button";
-import UserMenu from "@/components/user/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
+import UserMenu from "../user/general/UserMenu";
 
 const navLinks = [
   { href: "/", label: "Home" },
