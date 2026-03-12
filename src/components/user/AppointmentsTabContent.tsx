@@ -169,8 +169,7 @@ const AppointmentsTabContent = () => {
                             />
                           )}
                         {(apt.status === "pending" ||
-                          apt.status === "approved" ||
-                          apt.status === "confirmed") && (
+                          apt.status === "approved") && (
                           <CancelAppointmentDialog id={apt.id} />
                         )}
                       </div>

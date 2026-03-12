@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import CheckoutButton from "../partials/CheckoutButton";
+import CancelEnrollmentDialog from "./CancelEnrollmentDialog";
 
 const statusStyles: Record<
   EnrollmentStatus,
@@ -59,29 +60,41 @@ const EnrollmentsTabContent = () => {
         data?.pages.flat().map((enr) => {
           const status = statusStyles[enr.status];
           const StatusIcon = status.icon;
+
           return (
             <div
               key={enr.id}
-              className="rounded-lg border border-border bg-card p-5 shadow-sm"
+              className="rounded-lg border border-border bg-card shadow-sm"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between p-5">
+                <div className="flex md:items-center flex-col md:flex-row items-start gap-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
                     <GraduationCap className="h-5 w-5 text-accent" />
                   </div>
+
+                  {/* Mobile badge */}
+                  <Badge
+                    variant="outline"
+                    className={`flex md:hidden ${status.className}`}
+                  >
+                    <StatusIcon className="mr-1 h-3 w-3" />
+                    {enr.status.charAt(0).toUpperCase() + enr.status.slice(1)}
+                  </Badge>
+
                   <div>
                     <p className="font-medium text-card-foreground">
                       {enr.course?.title}
                     </p>
+
                     <p className="text-sm text-muted-foreground">
                       {enr.status === "submitted" ||
                       enr.status === "confirmed" ||
                       enr.status !== "cancelled"
                         ? "Starts: "
                         : "Started: "}
-
                       {format(enr.course_date, "d MMM yyyy")}
                     </p>
+
                     <div className="mt-1 space-y-1 text-sm">
                       <p className="text-card-foreground font-medium">
                         Total: € {enr.price}
@@ -103,20 +116,34 @@ const EnrollmentsTabContent = () => {
                           )}
                         </p>
                       )}
-                      {!enr.advance_payment_paid &&
-                        enr.status === "submitted" && (
-                          <CheckoutButton
-                            className="bg-accent text-accent-foreground hover:bg-accent/90 mt-2"
-                            id={enr.id}
-                            size="sm"
-                            type="enrollment"
-                            text={`Confirm enrollment - € ${enr.payment_type === "deposit" ? enr.advance_price : enr.price}`}
-                          />
+                      <div className="flex items-center gap-2 mt-2">
+                        {!enr.advance_payment_paid &&
+                          enr.status === "submitted" && (
+                            <CheckoutButton
+                              className="bg-accent text-accent-foreground hover:bg-accent/90 mt-2"
+                              id={enr.id}
+                              size="sm"
+                              type="enrollment"
+                              text={`Confirm enrollment - € ${
+                                enr.payment_type === "deposit"
+                                  ? enr.advance_price
+                                  : enr.price
+                              }`}
+                            />
+                          )}
+                        {enr.status === "submitted" && (
+                          <CancelEnrollmentDialog id={enr.id} />
                         )}
+                      </div>
                     </div>
                   </div>
                 </div>
-                <Badge variant="outline" className={status.className}>
+
+                {/* Desktop badge */}
+                <Badge
+                  variant="outline"
+                  className={`hidden md:flex ${status.className}`}
+                >
                   <StatusIcon className="mr-1 h-3 w-3" />
                   {enr.status.charAt(0).toUpperCase() + enr.status.slice(1)}
                 </Badge>
