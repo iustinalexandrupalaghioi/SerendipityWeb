@@ -74,7 +74,7 @@ const CancelEnrollMentDialog = ({ id }: Props) => {
             onClick={() => setOpen(false)}
             disabled={loading}
           >
-            Keep appointment
+            Keep enrollment
           </Button>
 
           <Button

@@ -116,11 +116,11 @@ const EnrollmentsTabContent = () => {
                           )}
                         </p>
                       )}
-                      <div className="flex items-center gap-2 mt-2">
+                      <div className="flex flex-col md:flex-row items-center gap-2 mt-2">
                         {!enr.advance_payment_paid &&
                           enr.status === "submitted" && (
                             <CheckoutButton
-                              className="bg-accent text-accent-foreground hover:bg-accent/90 mt-2"
+                              className="bg-accent text-accent-foreground hover:bg-accent/90"
                               id={enr.id}
                               size="sm"
                               type="enrollment"
