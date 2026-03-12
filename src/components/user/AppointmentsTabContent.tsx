@@ -156,12 +156,11 @@ const AppointmentsTabContent = () => {
                             )}
                           </p>
                         )}
-                      <div className="flex items-center gap-2 mt-2">
+                      <div className="flex flex-col md:flex-row items-center gap-2 mt-2">
                         {!apt.advance_payment_paid &&
-                          (apt.status === "approved" ||
-                            apt.status === "pending") && (
+                          apt.status === "approved" && (
                             <CheckoutButton
-                              className="bg-accent text-accent-foreground hover:bg-accent/90 "
+                              className="bg-accent text-accent-foreground hover:bg-accent/90 w-full md:max-w-fit"
                               id={apt.id}
                               size="sm"
                               text="Confirm appointment (Pay)"

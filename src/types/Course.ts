@@ -43,7 +43,7 @@ export type CourseDayActivity = {
 export type EnrollmentStatus =
   | "submitted"
   | "confirmed"
-  | "cancelled"
+  | "canceled"
   | "completed";
 
 export type Enrollment = {

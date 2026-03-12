@@ -29,10 +29,10 @@ const statusStyles: Record<
     label: "Confirmed",
   },
 
-  cancelled: {
+  canceled: {
     className: "bg-destructive/20 text-destructive border-destructive/30",
     icon: Ban,
-    label: "Rejected",
+    label: "Canceled",
   },
 
   completed: {
@@ -89,7 +89,7 @@ const EnrollmentsTabContent = () => {
                     <p className="text-sm text-muted-foreground">
                       {enr.status === "submitted" ||
                       enr.status === "confirmed" ||
-                      enr.status !== "cancelled"
+                      enr.status !== "canceled"
                         ? "Starts: "
                         : "Started: "}
                       {format(enr.course_date, "d MMM yyyy")}
@@ -100,7 +100,7 @@ const EnrollmentsTabContent = () => {
                         Total: € {enr.price}
                       </p>
 
-                      {enr.advance_price > 0 && enr.status !== "cancelled" && (
+                      {enr.advance_price > 0 && enr.status !== "canceled" && (
                         <p className="text-muted-foreground">
                           Advance: € {enr.advance_price}
                           {enr.advance_payment_paid ? (
@@ -120,7 +120,7 @@ const EnrollmentsTabContent = () => {
                         {!enr.advance_payment_paid &&
                           enr.status === "submitted" && (
                             <CheckoutButton
-                              className="bg-accent text-accent-foreground hover:bg-accent/90"
+                              className="bg-accent text-accent-foreground hover:bg-accent/90 w-full md:max-w-fit"
                               id={enr.id}
                               size="sm"
                               type="enrollment"

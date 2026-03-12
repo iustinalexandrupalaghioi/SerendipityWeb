@@ -49,17 +49,17 @@ const CancelAppointmentDialog = ({ id }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger className="w-full md:max-w-fit" asChild>
         <Button
           variant="outline"
           size="sm"
-          className="border-destructive text-destructive hover:bg-destructive/10"
+          className="w-full border-destructive text-destructive hover:bg-destructive/10"
         >
           Cancel
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="top-32">
         <DialogHeader>
           <DialogTitle>Cancel Appointment</DialogTitle>
           <DialogDescription>
