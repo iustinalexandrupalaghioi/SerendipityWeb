@@ -69,17 +69,19 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Useful Links */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-accent">
-              Quick Links
+              Useful Links
             </h3>
             <ul className="flex flex-col gap-3">
               {[
-                { href: "/", label: "Home" },
-                { href: "/services", label: "Services" },
-                { href: "/courses", label: "Courses" },
-                { href: "/about", label: "About" },
+                {
+                  href: "/terms-and-conditions",
+                  label: "Terms and Conditions",
+                },
+                { href: "/cookie-policy", label: "Cookie Policy" },
+                { href: "/privacy-policy", label: "Privacy Policy" },
               ].map((link) => (
                 <li key={link.href}>
                   <Link

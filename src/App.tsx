@@ -13,6 +13,9 @@ import ServicesPage from "./pages/Client/ServicesPage";
 import ErrorPage from "./pages/Error";
 import Layout from "./pages/Layout";
 import ProtectedRoute from "./pages/Protected/ProtectedRoute";
+import TermsAndConditions from "./pages/Legal/TermsAndconditions";
+import CookiePolicy from "./pages/Legal/CookiePolicy";
+import PrivacyPolicy from "./pages/Legal/PrivacyPolicy";
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
       <Route path="auth/signup-success" element={<SignupSuccess />} />
       <Route path="auth/forgot-password" element={<ForgotPassword />} />
       <Route path="auth/update-password" element={<UpdatePassword />} />
+      <Route path="terms-and-conditions" element={<TermsAndConditions />} />
+      <Route path="cookie-policy" element={<CookiePolicy />} />
+      <Route path="privacy-policy" element={<PrivacyPolicy />} />
       {/* Protected Routes */}
 
       <Route element={<Layout />}>
