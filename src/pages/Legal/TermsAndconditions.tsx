@@ -28,10 +28,7 @@ const TermsAndConditions = () => {
       </p>
 
       <h2 className="text-xl font-semibold">3. Eligibility</h2>
-      <p>
-        Participants must be at least 16 years old to enroll in courses or book
-        appointments, unless accompanied by a parent or legal guardian.
-      </p>
+      <p>Participants must be at least 18 years old to enroll in courses.</p>
 
       <h2 className="text-xl font-semibold">4. Course Enrollment</h2>
       <p>
@@ -141,11 +138,11 @@ const TermsAndConditions = () => {
       <h2 className="text-xl font-semibold">14. Governing Law</h2>
       <p>
         These Terms are governed by and interpreted according to the laws of
-        Romania.
+        Ireland.
       </p>
 
-      <h2 className="text-xl font-semibold">15. Contact Us</h2>
-      <p>For questions about these Terms and Conditions, contact us:</p>
+      <h2 className="text-xl font-semibold">15. Contact</h2>
+      <p>For questions about these Terms and Conditions, contact at:</p>
       <ul className="list-disc ml-6">
         <li>Email: {import.meta.env.VITE_CONTACT_EMAIL}</li>
         <li>Website: {import.meta.env.VITE_ROOT_URL}</li>

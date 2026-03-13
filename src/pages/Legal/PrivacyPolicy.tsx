@@ -33,7 +33,7 @@ const PrivacyPolicy = () => {
       <p>
         <strong>GT Master Nail Educator</strong>
         <br />
-        Romania
+        Ireland
         <br />
         Email: {import.meta.env.VITE_CONTACT_EMAIL}
       </p>
@@ -171,7 +171,7 @@ const PrivacyPolicy = () => {
 
       <h2 className="text-xl font-semibold">13. Children's Privacy</h2>
       <p>
-        Our Service is not intended for individuals under the age of 16 without
+        Our Service is not intended for individuals under the age of 18 without
         parental consent.
       </p>
 
