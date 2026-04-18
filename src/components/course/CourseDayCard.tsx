@@ -10,17 +10,27 @@ interface CourseDayCardProps {
 
 const CourseDayCard = ({ day, index }: CourseDayCardProps) => {
   return (
-    <Card key={index} className="overflow-hidden ">
-      <CardContent className="flex flex-col md:flex-row ">
-        <div className="md:w-40 h-40 shrink-0 mb-4 md:mb-0">
+    <Card key={index} className="group overflow-hidden md:py-0 pt-0">
+      {/* Mobile: full-width top image (like ServiceCard) */}
+      <figure className="relative w-full h-48 overflow-hidden rounded-t-lg md:hidden">
+        <img
+          src={day.image_url}
+          alt={day.title}
+          className="w-full h-full object-cover"
+        />
+      </figure>
+
+      {/* Desktop: side-by-side */}
+      <CardContent className="hidden md:flex flex-row p-0">
+        <figure className="relative w-56 shrink-0 overflow-hidden rounded-l-lg">
           <img
             src={day.image_url}
             alt={day.title}
-            className="w-full h-full object-cover rounded-lg"
+            className="w-full h-full object-cover"
           />
-        </div>
+        </figure>
 
-        <div className="flex-1 md:pl-6">
+        <div className="flex-1 p-6">
           <div className="flex flex-col items-start gap-3 mb-3">
             <Badge variant="default">Day {day.day_number}</Badge>
             <h3 className="text-primary font-semibold">{day.title}</h3>
@@ -37,6 +47,25 @@ const CourseDayCard = ({ day, index }: CourseDayCardProps) => {
             ))}
           </ul>
         </div>
+      </CardContent>
+
+      {/* Mobile: content below image */}
+      <CardContent className="md:hidden">
+        <div className="flex flex-col items-start gap-3 mb-3">
+          <Badge variant="default">Day {day.day_number}</Badge>
+          <h3 className="text-primary font-semibold">{day.title}</h3>
+        </div>
+        <ul className="space-y-2">
+          {day.course_day_activity?.map((activity) => (
+            <li
+              key={activity.id}
+              className="flex items-start gap-2 text-sm text-card-foreground"
+            >
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+              {activity.activity}
+            </li>
+          ))}
+        </ul>
       </CardContent>
     </Card>
   );

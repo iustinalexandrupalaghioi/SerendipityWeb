@@ -29,21 +29,21 @@ const CourseCard = ({ course, index }: CourseCardProps) => {
   return (
     <div className="group overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:shadow-lg">
       <div
-        className={`grid gap-0 lg:grid-cols-5 ${
-          index % 2 !== 0 ? "lg:[direction:rtl]" : ""
+        className={`grid gap-0 md:grid-cols-5 ${
+          index % 2 !== 0 ? "md:[direction:rtl]" : ""
         }`}
       >
         {/* Image */}
-        <div className="relative aspect-16/10 overflow-hidden lg:col-span-2 lg:aspect-auto lg:min-h-[360px]">
+        <div className="relative overflow-hidden md:col-span-2 flex items-center justify-center bg-muted aspect-4/3 md:aspect-auto md:min-h-[280px] md:max-h-[500px]">
           <img
             src={course.image_url}
             alt={course.title}
-            className="object-cover transition-transform duration-500 group-hover:scale-105 h-full w-full"
+            className="h-full w-full object-cover object-top lg:w-auto lg:object-contain max-h-[280px] lg:max-h-[500px] transition-transform duration-500 group-hover:scale-105"
           />
         </div>
 
         {/* Content */}
-        <div className="flex flex-col gap-6 p-8 lg:col-span-3 lg:[direction:ltr]">
+        <div className="flex flex-col gap-6 p-4 md:p-8 md:col-span-3 md:[direction:ltr]">
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <Badge
@@ -59,16 +59,22 @@ const CourseCard = ({ course, index }: CourseCardProps) => {
                 <Badge variant="destructive">Not available</Badge>
               )}
             </div>
-            <h2 className="mt-3 font-serif text-2xl font-bold text-card-foreground">
+            <h2 className="mt-3 font-serif text-xl md:text-2xl font-bold text-card-foreground">
               {course.title}
             </h2>
+            tsx
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {course.description}
+              <span className="lg:hidden">
+                {course.description.length > 150
+                  ? course.description.slice(0, 150) + "..."
+                  : course.description}
+              </span>
+              <span className="hidden lg:block">{course.description}</span>
             </p>
           </div>
 
           {/* Meta */}
-          <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Clock className="h-4 w-4 text-accent" />
               {course.duration_days} days
@@ -112,7 +118,7 @@ const CourseCard = ({ course, index }: CourseCardProps) => {
             </ul>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             {course.is_open && <CourseEnrollmentDialog course={course} />}
             <Link to={`/courses/${course.id}`}>
               <Button

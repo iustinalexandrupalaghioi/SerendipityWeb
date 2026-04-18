@@ -28,7 +28,7 @@ const Footer = () => {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-12 md:grid-cols-4">
+        <div className="grid gap-12 md:grid-cols-3 lg:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-1">
             <a href="/" className="flex items-center gap-2">
@@ -130,8 +130,8 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-foreground/70">
               {data?.map((item) => (
                 <div key={item.days} className="flex gap-2">
-                  <span className="text-wrap">{item.days}</span>
-                  <span className="text-nowrap">{item.interval}</span>
+                  <span className="text-nowrap">{item.days}:</span>
+                  <span className="text-nowrap">{item.intervals}</span>
                 </div>
               ))}
               {isLoading && !error && (

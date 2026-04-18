@@ -10,6 +10,7 @@ const fetchCourses = async (filters?: CourseFilters): Promise<Course[]> => {
   let query = supabase
     .from("course")
     .select("*, course_day(*, course_day_activity(*)), course_enrollment(*)")
+    .order("day_number", { referencedTable: "course_day", ascending: true })
     .order("created_at", { ascending: false });
   if (typeof filters?.isOpen === "boolean") {
     query = query.eq("is_open", filters.isOpen);

@@ -29,7 +29,7 @@ export default function CourseDetails() {
     <>
       {/* Hero Banner */}
       <section className="relative overflow-hidden bg-primary">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:py-28">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-2 lg:py-28">
           {/* LEFT CONTENT */}
           <div>
             <Link
@@ -102,11 +102,11 @@ export default function CourseDetails() {
           </div>
 
           {/* RIGHT IMAGE */}
-          <div className="relative">
+          <div className="relative flex items-center justify-start lg:justify-center">
             <img
               src={course?.image_url}
               alt={course?.title}
-              className="w-full rounded-2xl object-cover shadow-2xl"
+              className="w-auto max-h-80  md:max-h-[550px] rounded-2xl object cover lg:object-contain shadow-2xl"
             />
           </div>
         </div>
