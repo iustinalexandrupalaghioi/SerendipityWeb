@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import Logo from "@/assets/logo.png";
+import Logo from "@/assets/logo/logo.png";
 const SignUpSuccessCard = () => {
   return (
     <div className="flex w-full mx-auto my-10 justify-center p-6 md:p-10">

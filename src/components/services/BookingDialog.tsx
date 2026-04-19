@@ -205,9 +205,9 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full">
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          Book now
+        <Button>
+          <CalendarIcon className="h-4 w-4" />
+          <span>Book now</span>
         </Button>
       </DialogTrigger>
 

@@ -6,8 +6,8 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff, LockIcon, User, Mail } from "lucide-react";
-import Logo from "@/assets/logo.png";
-import google from "@/assets/google-icon-logo.svg";
+import Logo from "@/assets/logo/logo.png";
+import google from "@/assets/icons/google-icon-logo.svg";
 
 import { Button } from "@/components/ui/button";
 import {

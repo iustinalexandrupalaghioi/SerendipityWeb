@@ -20,7 +20,6 @@ export default function CourseDetails() {
   const course = data?.find((c) => c.id === id);
 
   if (isLoading) return <Loader />;
-
   if ((error && !isLoading) || (!course && !isLoading)) {
     return <Navigate to="/error" />;
   }
@@ -29,29 +28,36 @@ export default function CourseDetails() {
     <>
       {/* Hero Banner */}
       <section className="relative overflow-hidden bg-primary">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-2 lg:py-28">
-          {/* LEFT CONTENT */}
-          <div>
+        {/* Decorative background blobs */}
+        <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
+
+        <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-2 lg:py-28">
+          {/* Left content */}
+          <div className="flex flex-col">
             <Link
               to="/courses"
-              className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-primary-foreground/70 transition-colors hover:text-primary-foreground"
+              className="mb-8 inline-flex w-fit items-center gap-2 text-sm font-medium text-primary-foreground/60 transition-colors hover:text-primary-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to All Courses
             </Link>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge variant="default" className="bg-accent/80 capitalize">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className="bg-accent/80 capitalize">
                 Level: {course?.level}
               </Badge>
-              {!course?.is_open && (
+              {course?.is_open ? (
+                <Badge variant="outline" className="text-primary-foreground">
+                  Open for enrollments
+                </Badge>
+              ) : (
                 <Badge variant="destructive">Not available</Badge>
               )}
-
               {course?.is_open && course?.remaining_spots <= 3 && (
                 <Badge
                   variant="outline"
-                  className="border-destructive/30 bg-destructive/10 text-destructive"
+                  className="border-destructive/40 bg-destructive/10 text-destructive"
                 >
                   <AlertCircle className="mr-1 h-3 w-3" />
                   Only {course?.remaining_spots} spots left
@@ -59,55 +65,80 @@ export default function CourseDetails() {
               )}
             </div>
 
-            <h1 className="mt-4 font-serif text-4xl font-bold text-primary-foreground md:text-5xl lg:text-6xl text-balance">
+            <h1 className="mt-5 text-3xl font-serif font-bold text-primary-foreground md:text-4xl lg:text-5xl text-balance leading-tight">
               {course?.title}
             </h1>
 
             <p className="mt-4 text-base leading-relaxed text-primary-foreground/70 md:text-lg text-pretty">
               {course?.description}
             </p>
-            {/* Meta Row */}
-            <div className="mt-8 flex flex-wrap gap-6 text-sm text-primary-foreground/80">
-              <span className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-accent" />
-                {course?.duration_days} days
-              </span>
-              <span className="flex items-center gap-2 capitalize">
-                <BarChart3 className="h-4 w-4 text-accent" />
-                {course?.level}
-              </span>
-              {course?.is_open && (
-                <>
-                  <span className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 text-accent" />
-                    Starts{" "}
-                    {course?.start_date &&
-                      format(course.start_date, "dd-MMM-yyyy")}
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <Users className="h-4 w-4 text-accent" />
-                    {course?.remaining_spots} of {course?.available_spots} spots
-                    left
-                  </span>
-                </>
-              )}
-              <span className="flex items-center gap-2 font-semibold text-accent">
-                € {course?.price}
-              </span>
+
+            {/* Meta pills */}
+            <div className="mt-8 flex flex-wrap gap-3">
+              {[
+                {
+                  icon: <Clock className="h-4 w-4" />,
+                  label: `${course?.duration_days} days`,
+                },
+                {
+                  icon: <BarChart3 className="h-4 w-4" />,
+                  label: course?.level,
+                  className: "capitalize",
+                },
+                ...(course?.is_open
+                  ? [
+                      {
+                        icon: <CalendarDays className="h-4 w-4" />,
+                        label:
+                          course?.start_date &&
+                          `Starts ${format(course.start_date, "dd MMM yyyy")}`,
+                      },
+                      {
+                        icon: <Users className="h-4 w-4" />,
+                        label: `${course?.remaining_spots} of ${course?.available_spots} spots`,
+                      },
+                    ]
+                  : []),
+              ].map((item, i) => (
+                <span
+                  key={i}
+                  className={`inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-3 py-1.5 text-sm text-primary-foreground/80 ${item.className ?? ""}`}
+                >
+                  <span className="text-accent">{item.icon}</span>
+                  {item.label}
+                </span>
+              ))}
             </div>
 
-            <div className="mt-8 max-w-xs">
+            {/* Price + CTA */}
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <div>
+                <p className="text-3xl font-bold text-gold">
+                  € {course?.price}
+                </p>
+                {course?.advance_price && (
+                  <p className="mt-0.5 text-sm text-primary-foreground/60">
+                    Deposit from{" "}
+                    <span className="font-semibold text-primary-foreground/80">
+                      € {course.advance_price}
+                    </span>
+                  </p>
+                )}
+              </div>
               {course?.is_open && <CourseEnrollmentDialog course={course} />}
             </div>
           </div>
 
-          {/* RIGHT IMAGE */}
-          <div className="relative flex items-center justify-start lg:justify-center">
-            <img
-              src={course?.image_url}
-              alt={course?.title}
-              className="w-auto max-h-80  md:max-h-[550px] rounded-2xl object cover lg:object-contain shadow-2xl"
-            />
+          {/* Right image */}
+          <div className="relative flex items-center justify-center">
+            <div className="absolute -inset-4 rounded-3xl bg-gold/10 blur-2xl" />
+            <div className="relative overflow-hidden rounded-2xl border-2 border-primary-foreground/10 shadow-2xl">
+              <img
+                src={course?.image_url}
+                alt={course?.title}
+                className="w-auto max-h-80 md:max-h-[500px] object-contain"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -115,9 +146,10 @@ export default function CourseDetails() {
       {/* Content */}
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <div>
-              <h2 className="font-serif text-2xl font-bold text-foreground">
+          {/* Main */}
+          <div className="lg:col-span-2 flex flex-col gap-10">
+            <div className="rounded-2xl border border-border bg-background p-8">
+              <h2 className="text-2xl font-bold text-foreground">
                 About This Course
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
@@ -125,70 +157,97 @@ export default function CourseDetails() {
               </p>
             </div>
 
-            <div className="mt-6">
-              <h2 className="font-serif text-2xl font-bold text-foreground ">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-6">
                 What you'll learn
               </h2>
-
-              <div className="mt-6 flex flex-col gap-4">
-                {course?.course_day?.map((day, index) => (
-                  <CourseDayCard day={day} index={index} key={day.id} />
+              <div className="flex flex-col gap-4">
+                {course?.course_day?.map((day) => (
+                  <CourseDayCard day={day} key={day.id} />
                 ))}
               </div>
             </div>
           </div>
 
+          {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <div className="rounded-2xl border border-border bg-card p-8 shadow-xl">
-                <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="sticky top-24 flex flex-col gap-4">
+              <div className="rounded-2xl border border-border bg-background p-8 shadow-xl">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                   Course Investment
                 </p>
 
-                {/* Full Price */}
-                <p className="mt-3 font-sans text-4xl font-bold text-card-foreground flex items-center">
+                <p className="mt-3 text-4xl font-bold text-gold">
                   € {course?.price}
                 </p>
 
-                {/* Advance Required */}
                 {course?.advance_price && (
-                  <div className="mt-4 rounded-lg bg-accent/10 p-4">
-                    <p className="text-sm font-medium text-accent">
-                      Secure your seat with
+                  <>
+                    <div className="mt-4 rounded-xl bg-accent/10 border border-accent/20 p-4">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-accent/70">
+                        Secure your seat with
+                      </p>
+                      <p className="mt-1 text-2xl font-bold text-accent">
+                        € {course.advance_price}
+                        <span className="text-sm font-normal ml-1">
+                          deposit
+                        </span>
+                      </p>
+                    </div>
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      Remaining balance:{" "}
+                      <span className="font-semibold text-foreground">
+                        € {course.price - course.advance_price}
+                      </span>
                     </p>
-                    <p className="text-xl font-semibold text-accent flex items-center">
-                      € {course?.advance_price} deposit
-                    </p>
-                  </div>
-                )}
-
-                {/* Remaining */}
-                {course?.advance_price && (
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    Pay the rest later:{" "}
-                    <span className="flex items-center">
-                      € {course?.price - course?.advance_price}
-                    </span>
-                  </p>
+                  </>
                 )}
 
                 {course?.is_open && (
                   <>
-                    <div className="mt-6">
-                      <CourseEnrollmentDialog
-                        className="bg-primary text-primary-foreground hover:bg-primary/90"
-                        course={course!}
-                      />
-                    </div>
-                    <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
-                      <Users className="h-4 w-4 text-accent" />
+                    <div className="my-6 border-t border-border" />
+                    <CourseEnrollmentDialog
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                      course={course}
+                    />
+                    <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Users className="h-4 w-4 text-accent shrink-0" />
                       <span>
-                        {course?.remaining_spots} of {course?.available_spots}{" "}
+                        {course.remaining_spots} of {course.available_spots}{" "}
                         spots remaining
                       </span>
-                    </div>{" "}
+                    </div>
                   </>
                 )}
+              </div>
+
+              {/* Quick facts card */}
+              <div className="rounded-2xl border border-border bg-background p-6">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+                  Quick Facts
+                </p>
+                <ul className="flex flex-col gap-3 text-sm">
+                  <li className="flex items-center gap-2 text-muted-foreground">
+                    <Clock className="h-4 w-4 text-accent shrink-0" />
+                    {course?.duration_days} day(s)
+                  </li>
+                  <li className="flex items-center gap-2 text-muted-foreground capitalize">
+                    <BarChart3 className="h-4 w-4 text-accent shrink-0" />
+                    {course?.level} level
+                  </li>
+                  {course?.is_open && (
+                    <>
+                      <li className="flex items-center gap-2 text-muted-foreground">
+                        <CalendarDays className="h-4 w-4 text-accent shrink-0" />
+                        Starts {format(course.start_date, "dd MMM yyyy")}
+                      </li>
+                      <li className="flex items-center gap-2 text-muted-foreground">
+                        <Users className="h-4 w-4 text-accent shrink-0" />
+                        {course.remaining_spots} spots left
+                      </li>
+                    </>
+                  )}
+                </ul>
               </div>
             </div>
           </div>

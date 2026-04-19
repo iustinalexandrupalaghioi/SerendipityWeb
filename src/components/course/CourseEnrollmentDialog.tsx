@@ -164,7 +164,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
           }}
         >
           <GraduationCap className="mr-2 h-4 w-4" />
-          Enroll Now
+          Enroll now
         </Button>
       </DialogTrigger>
 

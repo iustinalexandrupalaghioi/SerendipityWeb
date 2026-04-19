@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react"; // Lucide icons
 import { Link } from "react-router";
-import hero from "@/assets/hero-nails.jpg";
+import NailArt from "@/assets/NailArt.webp";
 
 const HeroSection = () => {
   return (
@@ -9,7 +9,7 @@ const HeroSection = () => {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src={hero}
+          src={NailArt}
           alt="Beautiful nail art showcase"
           className="object-cover w-full h-full"
         />
@@ -34,7 +34,7 @@ const HeroSection = () => {
               size="lg"
               className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold px-8"
             >
-              Book an Appointment
+              Book an appointment
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
@@ -44,7 +44,7 @@ const HeroSection = () => {
               variant="outline"
               className="border-primary-foreground/30 text-primary-foreground bg-transparent hover:bg-primary-foreground/10 hover:text-primary-foreground px-8"
             >
-              Explore Courses
+              Explore courses
             </Button>
           </Link>
         </div>

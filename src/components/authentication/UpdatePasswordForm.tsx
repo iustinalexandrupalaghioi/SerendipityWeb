@@ -28,7 +28,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Link, useNavigate } from "react-router";
 import { Eye, EyeOff, LockIcon } from "lucide-react";
 import { useState } from "react";
-import Logo from "@/assets/logo.png";
+import Logo from "@/assets/logo/logo.png";
 
 const formSchema = z
   .object({
