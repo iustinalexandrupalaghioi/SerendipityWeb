@@ -1,6 +1,6 @@
 const ServicesHeader = () => {
   return (
-    <section className="bg-primary px-6 py-20 text-center">
+    <section className="bg-primary relative px-6 py-20 text-center">
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
         Services
       </p>

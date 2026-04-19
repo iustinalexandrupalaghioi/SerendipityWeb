@@ -9,15 +9,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const CourseCardSkeleton = () => (
   <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-background">
-    <Skeleton className="aspect-4/3 w-full" />
+    <Skeleton className="aspect-4/3 w-full bg-muted" />
     <div className="p-6 flex flex-col gap-3">
-      <Skeleton className="h-6 w-3/4" />
-      <Skeleton className="h-4 w-full" />
-      <Skeleton className="h-4 w-2/3" />
-      <Skeleton className="h-4 w-24 mt-1" />
+      <Skeleton className="h-6 w-3/4 bg-muted" />
+      <Skeleton className="h-4 w-full bg-muted" />
+      <Skeleton className="h-4 w-2/3 bg-muted" />
+      <Skeleton className="h-4 w-24 mt-1 bg-muted" />
       <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
-        <Skeleton className="h-6 w-16" />
-        <Skeleton className="h-9 w-32" />
+        <Skeleton className="h-6 w-16 bg-muted" />
+        <Skeleton className="h-9 w-32 bg-muted" />
       </div>
     </div>
   </div>
@@ -40,7 +40,7 @@ const CoursesCarouselSkeleton = () => {
       <div className="mt-8 flex items-center justify-between">
         <div className="flex gap-2">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-2.5 w-2.5 rounded-full" />
+            <Skeleton key={i} className="h-2.5 w-2.5 rounded-full bg-muted" />
           ))}
         </div>
 

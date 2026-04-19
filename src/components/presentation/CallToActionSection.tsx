@@ -23,7 +23,7 @@ export function CallToActionSection() {
           <h2 className="mt-3 font-serif text-3xl font-bold text-primary-foreground md:text-4xl text-balance">
             Master the art of nail design
           </h2>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-primary-foreground/80 text-pretty">
+          <p className="mt-6 text-lg leading-relaxed text-primary-foreground/80 text-pretty">
             Transform your passion into a career with exclusive training.
             Courses are designed with luxury standards, taught in small groups
             or private 1-to-1 sessions, with all materials included.

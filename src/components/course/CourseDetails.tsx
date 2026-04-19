@@ -28,10 +28,6 @@ export default function CourseDetails() {
     <>
       {/* Hero Banner */}
       <section className="relative overflow-hidden bg-primary">
-        {/* Decorative background blobs */}
-        <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-accent/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
-
         <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 py-20 md:grid-cols-2 lg:py-28">
           {/* Left content */}
           <div className="flex flex-col">
@@ -130,9 +126,9 @@ export default function CourseDetails() {
           </div>
 
           {/* Right image */}
-          <div className="relative flex items-center justify-center">
+          <div className="relative w-fit flex items-center justify-center">
             <div className="absolute -inset-4 rounded-3xl bg-gold/10 blur-2xl" />
-            <div className="relative overflow-hidden rounded-2xl border-2 border-primary-foreground/10 shadow-2xl">
+            <div className="relative w-fit overflow-hidden rounded-2xl border-2 border-gold/30 shadow shadow-gold/20">
               <img
                 src={course?.image_url}
                 alt={course?.title}
@@ -149,16 +145,16 @@ export default function CourseDetails() {
           {/* Main */}
           <div className="lg:col-span-2 flex flex-col gap-10">
             <div className="rounded-2xl border border-border bg-background p-8">
-              <h2 className="text-2xl font-bold text-foreground">
+              <h2 className="text-2xl font-serif font-bold text-foreground">
                 About This Course
               </h2>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
+              <p className="mt-6 text-lg leading-relaxed text-muted-foreground text-pretty">
                 {course?.description}
               </p>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-6">
+              <h2 className="text-2xl font-serif font-bold text-foreground mb-6">
                 What you'll learn
               </h2>
               <div className="flex flex-col gap-4">

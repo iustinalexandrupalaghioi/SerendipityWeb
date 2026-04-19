@@ -69,7 +69,7 @@ export function Navbar() {
               size="sm"
               className="bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              Book Now
+              Book now
             </Button>
           </Link>
         </div>
