@@ -29,8 +29,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Mail, LockIcon, Eye, EyeOff } from "lucide-react";
-import google from "@/assets/google-icon-logo.svg";
-import Logo from "@/assets/logo.png";
+import google from "@/assets/icons/google-icon-logo.svg";
+import Logo from "@/assets/logo/logo.png";
 
 const loginSchema = z.object({
   email: z.email("Please enter a valid email"),

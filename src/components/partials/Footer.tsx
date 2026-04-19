@@ -1,7 +1,7 @@
-import FacebookIcon from "@/assets/facebook.svg";
-import InstagramIcon from "@/assets/instagram.svg";
-import Logo from "@/assets/logo.png";
-import TikTokIcon from "@/assets/tiktok.svg";
+import FacebookIcon from "@/assets/icons/facebook.svg";
+import InstagramIcon from "@/assets/icons/instagram.svg";
+import Logo from "@/assets/logo/logo.png";
+import TikTokIcon from "@/assets/icons/tiktok.svg";
 import { supabase } from "@/lib/supabaseClient";
 import type { BusinessHour } from "@/types/BusinessHour";
 import { useQuery } from "@tanstack/react-query";

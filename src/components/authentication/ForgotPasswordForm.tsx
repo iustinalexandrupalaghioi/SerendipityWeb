@@ -27,7 +27,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Mail } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
-import Logo from "@/assets/logo.png";
+import Logo from "@/assets/logo/logo.png";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -59,7 +59,7 @@ export function ForgotPasswordForm({
         values.email,
         {
           redirectTo: `${window.location.origin}/auth/update-password`,
-        }
+        },
       );
       if (error) throw error;
       setSuccess(true);

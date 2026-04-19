@@ -1,73 +1,48 @@
 import type { CourseDay } from "@/types/Course";
-import { CheckCircle2 } from "lucide-react";
+import { Check } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { Card, CardContent } from "../ui/card";
 
 interface CourseDayCardProps {
   day: CourseDay;
-  index: number;
 }
 
-const CourseDayCard = ({ day, index }: CourseDayCardProps) => {
+const CourseDayCard = ({ day }: CourseDayCardProps) => {
   return (
-    <Card key={index} className="group overflow-hidden md:py-0 pt-0">
-      {/* Mobile: full-width top image (like ServiceCard) */}
-      <figure className="relative w-full h-48 overflow-hidden rounded-t-lg md:hidden">
-        <img
-          src={day.image_url}
-          alt={day.title}
-          className="w-full h-full object-cover"
-        />
-      </figure>
-
-      {/* Desktop: side-by-side */}
-      <CardContent className="hidden md:flex flex-row p-0">
-        <figure className="relative w-56 shrink-0 overflow-hidden rounded-l-lg">
+    <div className="group overflow-hidden rounded-2xl border border-border bg-background transition-all duration-300 hover:border-gold/50 hover:shadow-xl hover:shadow-gold/5">
+      <div className="flex flex-col md:flex-row">
+        {/* Image */}
+        <div className="relative overflow-hidden md:w-56 md:shrink-0 aspect-4/3 md:aspect-auto">
           <img
             src={day.image_url}
             alt={day.title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-        </figure>
+          <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent md:hidden" />
+          <Badge className="absolute left-3 top-3">Day {day.day_number}</Badge>
+        </div>
 
-        <div className="flex-1 p-6">
-          <div className="flex flex-col items-start gap-3 mb-3">
-            <Badge variant="default">Day {day.day_number}</Badge>
-            <h3 className="text-primary font-semibold">{day.title}</h3>
-          </div>
+        {/* Content */}
+        <div className="flex flex-col gap-4 p-6 flex-1">
+          <h3 className="text-lg font-serif font-bold text-foreground">
+            {day.title}
+          </h3>
+
           <ul className="space-y-2">
             {day.course_day_activity?.map((activity) => (
               <li
                 key={activity.id}
-                className="flex items-start gap-2 text-sm text-card-foreground"
+                className="flex items-start gap-2 text-sm text-muted-foreground"
               >
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold/20 mt-0.5">
+                  <Check className="h-3 w-3 text-gold-dark" />
+                </div>
                 {activity.activity}
               </li>
             ))}
           </ul>
         </div>
-      </CardContent>
-
-      {/* Mobile: content below image */}
-      <CardContent className="md:hidden">
-        <div className="flex flex-col items-start gap-3 mb-3">
-          <Badge variant="default">Day {day.day_number}</Badge>
-          <h3 className="text-primary font-semibold">{day.title}</h3>
-        </div>
-        <ul className="space-y-2">
-          {day.course_day_activity?.map((activity) => (
-            <li
-              key={activity.id}
-              className="flex items-start gap-2 text-sm text-card-foreground"
-            >
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-              {activity.activity}
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
