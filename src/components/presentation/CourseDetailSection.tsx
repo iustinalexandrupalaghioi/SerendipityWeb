@@ -5,6 +5,7 @@ import PurpleNailArtClose from "@/assets/course-presentation/PurpleNailArtClose.
 import NailArtWithModel from "@/assets/course-presentation/NailArtWithModel.webp";
 import Students from "@/assets/course-presentation/Students.webp";
 import BrownNailArt from "@/assets/course-presentation/BrownNailArt.webp";
+
 const courseFeatures = [
   "Comprehensive hands-on training",
   "All materials and tools included",
@@ -17,12 +18,12 @@ const courseFeatures = [
 const courseHighlights = [
   {
     icon: Clock,
-    title: "Flexible Schedule",
+    title: "Flexible schedule",
     description: "Choose dates that work for you",
   },
   {
     icon: Users,
-    title: "Small Groups",
+    title: "Small groups",
     description: "Maximum 4 students per class",
   },
   {
@@ -32,7 +33,7 @@ const courseHighlights = [
   },
   {
     icon: Sparkles,
-    title: "Premium Quality",
+    title: "Premium quality",
     description: "Learn with luxury products",
   },
 ];
@@ -47,7 +48,7 @@ export function CourseDetailSection() {
             Professional Training
           </p>
           <h2 className="mt-3  font-serif text-3xl font-bold text-foreground md:text-4xl text-balance">
-            Transform Your Passion Into a Career
+            Transform your passion into a career
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground text-pretty">
             Join our exclusive nail art courses and learn the techniques that

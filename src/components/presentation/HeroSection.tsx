@@ -5,7 +5,7 @@ import NailArt from "@/assets/NailArt.webp";
 
 const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img

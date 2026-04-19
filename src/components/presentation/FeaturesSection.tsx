@@ -30,12 +30,12 @@ const features = [
 export function FeaturesSection() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-24">
-      <div className="text-center">
+      <div className="text-start md:text-center">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
           Why choose Serendipity Nail Lab?
         </p>
         <h2 className="mt-3 font-serif text-3xl font-bold text-foreground md:text-4xl text-balance">
-          Crafted with Passion & Precision
+          Crafted with passion & precision
         </h2>
       </div>
 

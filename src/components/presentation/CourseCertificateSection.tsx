@@ -35,7 +35,7 @@ export function CertificateSection() {
             Professional Certification
           </p>
           <h2 className="mt-3 font-serif text-3xl font-bold text-secondary-foreground md:text-4xl text-balance">
-            Earn Your Official Certificate
+            Earn your official certificate
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-muted-foreground text-pretty">
             Upon successful completion of your training, you will receive an
