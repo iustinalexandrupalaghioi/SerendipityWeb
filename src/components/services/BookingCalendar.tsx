@@ -40,11 +40,11 @@ export const BookingCalendar = ({
           disabled={(d) => {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const isPast = d < today;
+            const isPastOrToday = d <= today;
             const isBooked = (bookedDateObjects ?? []).some(
               (booked) => booked.toDateString() === d.toDateString(),
             );
-            return isPast || isBooked;
+            return isPastOrToday || isBooked;
           }}
           modifiers={{
             bookedDateObjects,

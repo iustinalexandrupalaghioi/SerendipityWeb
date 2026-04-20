@@ -46,7 +46,7 @@ const ServiceCard = ({ service }: Props) => {
             </span>
             {service.advance_price && (
               <span className="text-xs text-muted-foreground">
-                Advance:{" "}
+                Deposit:{" "}
                 <span className="font-semibold text-accent/70">
                   € {service.advance_price}
                 </span>
