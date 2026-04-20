@@ -8,6 +8,7 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
+  Info,
   XCircle,
   type LucideIcon,
 } from "lucide-react";
@@ -15,163 +16,166 @@ import CheckoutButton from "../../../partials/CheckoutButton";
 import { Badge } from "../../../ui/badge";
 import CancelAppointmentDialog from "./CancelAppointmentDialog";
 
-const statusStyles: Record<
+const statusConfig: Record<
   AppointmentStatus,
   { className: string; icon: LucideIcon; label: string }
 > = {
   pending: {
-    // same visual meaning as upcoming
-    className: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    className: "bg-yellow-100 text-yellow-800 border-yellow-300",
     icon: Clock,
     label: "Upcoming",
   },
-
   approved: {
-    className: "bg-blue-100 text-blue-800 border-blue-200",
+    className: "bg-blue-100 text-blue-800 border-blue-300",
     icon: BadgeCheck,
     label: "Approved",
   },
-
   confirmed: {
-    className: "bg-accent/20 text-accent-foreground border-accent/30",
+    // was green, now uses primary
+    className: "bg-primary/10 text-primary border-primary/30",
     icon: CheckCircle2,
     label: "Confirmed",
   },
-
   rejected: {
-    className: "bg-destructive/20 text-destructive border-destructive/30",
+    className: "bg-destructive/10 text-destructive border-destructive/40",
     icon: Ban,
     label: "Rejected",
   },
-
   completed: {
-    className: "bg-green-100 text-green-800 border-green-200",
+    // was emerald, now uses accent
+    className: "bg-accent/10 text-accent border-accent/30",
     icon: CheckCircle2,
     label: "Completed",
   },
   canceled: {
-    className: "bg-gray-100 text-gray-800 border-gray-200",
+    className: "bg-muted text-muted-foreground border-border",
     icon: XCircle,
     label: "Canceled",
   },
 };
 
-interface AppointmentCardProps {
-  apt: Appointment;
-}
-const AppointmentCard = ({ apt }: AppointmentCardProps) => {
-  const status = statusStyles[apt.status];
-  const StatusIcon = status.icon;
+const AppointmentCard = ({ apt }: { apt: Appointment }) => {
+  const { icon: StatusIcon, label, className } = statusConfig[apt.status];
+  const isRejected = apt.status === "rejected";
+  const hasNote =
+    !!apt.notes && ["approved", "confirmed", "completed"].includes(apt.status);
+  const depositUnpaid =
+    apt.service.advance_price > 0 &&
+    !apt.advance_payment_paid &&
+    apt.status === "approved";
+
   return (
     <div
-      key={apt.id}
-      className={`rounded-lg border bg-card shadow-sm ${
-        apt.status === "rejected" ? "border-destructive/30" : "border-border"
-      }`}
+      className={cn(
+        "rounded-xl border bg-card overflow-hidden transition-shadow hover:shadow-sm",
+        isRejected ? "border-destructive/30" : "border-border",
+      )}
     >
-      <div className="flex items-center justify-between p-5">
-        <div className="flex md:items-center flex-col md:flex-row items-start gap-4">
+      <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        {/* Badge on top for mobile */}
+        <Badge
+          variant="outline"
+          className={cn(
+            "self-start rounded-full text-xs sm:order-last sm:shrink-0",
+            className,
+          )}
+        >
+          <StatusIcon className="mr-1 h-3 w-3" />
+          {label}
+        </Badge>
+
+        <div className="flex items-start gap-3 flex-1 min-w-0">
           <div
-            className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-              apt.status === "rejected" ? "bg-destructive/10" : "bg-primary/10"
-            }`}
+            className={cn(
+              "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
+              isRejected ? "bg-destructive/10" : "bg-muted",
+            )}
           >
             <Calendar
-              className={`h-5 w-5 ${
-                apt.status === "rejected" ? "text-destructive" : "text-primary"
-              }`}
+              className={cn(
+                "h-4 w-4",
+                isRejected ? "text-destructive" : "text-muted-foreground",
+              )}
             />
           </div>
-          <Badge
-            variant="outline"
-            className={cn("flex md:hidden", status.className)}
-          >
-            <StatusIcon className="mr-1 h-3 w-3" />
-            {apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
-          </Badge>
-          <div>
+
+          <div className="flex-1 min-w-0">
             <p className="font-medium text-card-foreground">
               {apt.service.title}
             </p>
-            <p className="text-sm text-muted-foreground">
-              {format(apt.date, "d MMM yyyy")} at {apt.start_time.slice(0, 5)} -{" "}
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {format(apt.date, "d MMM yyyy")} · {apt.start_time.slice(0, 5)} –{" "}
               {apt.end_time.slice(0, 5)}
             </p>
-            <div className="mt-1 space-y-1 text-sm">
-              <p className="text-card-foreground font-medium">
-                Total: € {apt.service.price}
-              </p>
 
-              {apt.service.advance_price > 0 && apt.status !== "rejected" && (
-                <p className="text-muted-foreground">
-                  Advance: € {apt.service.advance_price}
-                  {apt.advance_payment_paid ? (
-                    <span className="ml-2 inline-flex items-center text-green-600">
-                      <CheckCircle2 className="mr-1 h-3 w-3" />
-                      Paid
-                    </span>
-                  ) : (
-                    <span className="ml-2 inline-flex items-center text-yellow-600">
-                      <Clock className="mr-1 h-3 w-3" />
-                      Not paid
-                    </span>
-                  )}
-                </p>
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+              <span className="font-semibold">€ {apt.service.price}</span>
+
+              {apt.service.advance_price > 0 && !isRejected && (
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  <span
+                    className={cn(
+                      "inline-block h-1.5 w-1.5 rounded-full",
+                      apt.advance_payment_paid ? "bg-primary" : "bg-yellow-500",
+                    )}
+                  />
+                  Deposit € {apt.service.advance_price} ·{" "}
+                  <span
+                    className={
+                      apt.advance_payment_paid
+                        ? "text-primary"
+                        : "text-yellow-600"
+                    }
+                  >
+                    {apt.advance_payment_paid ? "paid" : "not paid"}
+                  </span>
+                </span>
               )}
-              <div className="flex flex-col md:flex-row items-center gap-2 mt-2">
-                {!apt.advance_payment_paid && apt.status === "approved" && (
+            </div>
+
+            {(depositUnpaid ||
+              apt.status === "pending" ||
+              apt.status === "approved") && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {depositUnpaid && (
                   <CheckoutButton
-                    className="bg-accent text-accent-foreground hover:bg-accent/90 w-full md:max-w-fit"
                     id={apt.id}
                     size="sm"
-                    text="Confirm appointment (Pay)"
+                    text="Pay deposit"
                     type="appointment"
+                    className="bg-accent text-accent-foreground hover:bg-accent/90 w-full md:max-w-fit"
                   />
                 )}
                 {(apt.status === "pending" || apt.status === "approved") && (
                   <CancelAppointmentDialog id={apt.id} />
                 )}
               </div>
-            </div>
+            )}
           </div>
         </div>
-        <Badge
-          variant="outline"
-          className={cn("hidden md:flex", status.className)}
-        >
-          <StatusIcon className="mr-1 h-3 w-3" />
-          {apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
-        </Badge>
       </div>
-      {apt.status === "rejected" && apt.notes && (
-        <div className="border-t border-destructive/20 bg-destructive/5 px-5 py-3">
-          <div className="flex items-start gap-2">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
-            <div>
-              <p className="text-xs font-semibold text-destructive">
-                Rejection Reason
-              </p>
-              <p className="mt-0.5 text-sm text-destructive/80">{apt.notes}</p>
-            </div>
+
+      {isRejected && apt.notes && (
+        <div className="flex items-start gap-2.5 border-t border-destructive/20 bg-destructive/5 px-5 py-3">
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-destructive" />
+          <div>
+            <p className="text-xs font-semibold text-destructive">
+              Rejection reason
+            </p>
+            <p className="mt-0.5 text-sm text-destructive/80">{apt.notes}</p>
           </div>
         </div>
       )}
-      {["approve", "confirmed", "completed"].some(
-        (status) => status === apt.status,
-      ) &&
-        apt.notes && (
-          <div className="border-t border-blue-100 bg-blue-100/50 px-5 py-3">
-            <div className="flex items-start gap-2">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
-              <div>
-                <p className="text-xs font-semibold text-blue-500">
-                  Approved Notes
-                </p>
-                <p className="mt-0.5 text-sm text-blue-500/80">{apt.notes}</p>
-              </div>
-            </div>
+
+      {hasNote && (
+        <div className="flex items-start gap-2.5 border-t border-blue-100 bg-blue-50 px-5 py-3">
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-500" />
+          <div>
+            <p className="text-xs font-semibold text-blue-600">Note</p>
+            <p className="mt-0.5 text-sm text-blue-500/90">{apt.notes}</p>
           </div>
-        )}
+        </div>
+      )}
     </div>
   );
 };

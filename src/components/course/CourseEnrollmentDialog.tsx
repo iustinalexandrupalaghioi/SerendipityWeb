@@ -73,11 +73,8 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
     if (!open) return;
 
     if (user) {
-      const first = user.user_metadata?.first_name ?? "";
-      const last = user.user_metadata?.last_name ?? "";
-
-      setFullName(`${first} ${last}`.trim());
-      setEmail(user.email ?? "");
+      setFullName(user.user_metadata.full_name.trim());
+      setEmail(user.email.trim() ?? "");
       setDob(user.user_metadata?.date_of_birth ?? "");
     }
 
@@ -211,7 +208,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
             </h3>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              You've enrolled in{" "}
+              You've enrolled to{" "}
               <span className="font-medium text-primary">{course.title}</span>.
             </p>
 
@@ -241,11 +238,12 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 pt-2">
             <DialogHeader>
               <DialogTitle className="font-serif text-lg text-primary">
-                Enroll in {course.title}
+                Enroll to {course.title}
               </DialogTitle>
 
               <DialogDescription>
-                {course.level} · {course.duration_days} days · € {course.price}
+                <span className="capitalize">{course.level}</span> ·{" "}
+                {course.duration_days} day(s) · € {course.price}
               </DialogDescription>
             </DialogHeader>
 
@@ -297,7 +295,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
                 <div className="flex items-center gap-3">
                   <RadioGroupItem value="deposit" id="pay-advance" />
                   <Label htmlFor="pay-advance">
-                    Advance payment (€ {course.advance_price})
+                    Deposit (€ {course.advance_price})
                   </Label>
                 </div>
 

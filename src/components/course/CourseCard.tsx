@@ -1,14 +1,6 @@
 import { cn } from "@/lib/utils";
 import type { Course } from "@/types/Course";
-import { format } from "date-fns/format";
-import {
-  ArrowRight,
-  BarChart3,
-  CalendarDays,
-  Check,
-  Clock,
-  Users,
-} from "lucide-react";
+import { ArrowRight, BarChart3, Check, Clock } from "lucide-react";
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -85,18 +77,6 @@ const CourseCard = ({ course, index }: CourseCardProps) => {
               <BarChart3 className="h-4 w-4" />
               {course.level}
             </span>
-            {course.is_open && (
-              <>
-                <span className="flex items-center gap-1.5">
-                  <CalendarDays className="h-4 w-4" />
-                  Starts {format(course.start_date, "dd-MMM-yyy")}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <Users className="h-4 w-4" />
-                  {course.remaining_spots} spots left
-                </span>
-              </>
-            )}
           </div>
 
           {/* Highlights */}
