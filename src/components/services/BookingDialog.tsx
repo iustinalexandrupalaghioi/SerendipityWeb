@@ -5,7 +5,12 @@ import { supabase } from "@/lib/supabaseClient";
 import type { Service } from "@/types/Service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { CalendarIcon, CheckIcon, LogInIcon } from "lucide-react";
+import {
+  AlertCircleIcon,
+  CalendarIcon,
+  CheckIcon,
+  LogInIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -20,6 +25,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { BookingCalendar } from "./BookingCalendar";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 interface BookingDialogProps {
   service: Service;
@@ -74,7 +80,7 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
   } = useAvailableHours({
     date: format(date ? date : new Date(), "yyyy-MM-dd"),
     duration: service.duration,
-    enabled: true,
+    enabled: date !== undefined,
   });
 
   /* ---------------- MUTATION ---------------- */
@@ -209,19 +215,24 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="md:min-w-2xl max-w-full mt-4 top-4 translate-y-0 px-2 md:px-4 max-h-[80vh] overflow-y-auto">
+      <DialogContent className="md:min-w-2xl max-w-full mt-4 top-4 translate-y-0 px-2 md:px-4 max-h-[80vh] md:max-h-[90vh] flex flex-col overflow-hidden">
         {bookingError ? (
           <div className="flex flex-col items-center py-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/20">
-              <CalendarIcon className="h-8 w-8 text-destructive" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
+              <AlertCircleIcon className="h-6 w-6 text-destructive" />
             </div>
 
-            <p className="mt-2 text-sm text-muted-foreground">{bookingError}</p>
+            <h3 className="mt-4 text-base font-serif font-semibold text-foreground">
+              Booking failed
+            </h3>
+            <p className="mt-1.5 text-sm text-muted-foreground max-w-xs">
+              {bookingError}
+            </p>
 
-            <div className="mt-6 flex gap-4 w-full">
+            <div className="mt-6 flex gap-3 w-full">
               <Button
                 variant="secondary"
-                onClick={() => navigate("/services")}
+                onClick={() => setOpen(false)}
                 className="flex-1"
               >
                 Browse services
@@ -237,30 +248,46 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
         ) : submitted ? (
           <div className="flex flex-col items-center py-8 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/20">
-              <CalendarIcon className="h-8 w-8 text-accent" />
+              <CheckIcon className="h-8 w-8 text-accent" />
             </div>
 
             <h3 className="mt-4 font-serif text-xl font-bold text-primary">
               Booking request sent!
             </h3>
-
-            <p className="mt-2 text-sm text-muted-foreground">
-              {`Your ${service.title} appointment request has been submitted.`}
+            <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed max-w-xs">
+              You'll receive a confirmation email once approved.
             </p>
 
-            <p className="mt-2 text-sm text-muted-foreground">
-              I will review your request and send you a confirmation email once
-              approved.
-            </p>
+            {/* Summary card */}
+            <div className="mt-5 w-full rounded-xl bg-muted/50 border border-border divide-y divide-border text-sm">
+              <div className="flex justify-between gap-4 items-start px-4 py-2.5">
+                <span className="text-muted-foreground shrink-0">Service</span>
+                <span className="font-medium text-foreground text-end wrap-break-word min-w-0">
+                  {service.title}
+                </span>
+              </div>
+              <div className="flex justify-between items-center px-4 py-2.5">
+                <span className="text-muted-foreground">Date & time</span>
+                <span className="font-medium text-foreground">
+                  {date && format(date, "d MMMM")} · {time}
+                </span>
+              </div>
+              <div className="flex justify-between items-center px-4 py-2.5">
+                <span className="text-muted-foreground">Duration</span>
+                <span className="font-medium text-foreground">
+                  {service.duration} min
+                </span>
+              </div>
+            </div>
 
-            <p className="mt-1 text-xs text-muted-foreground/70">
+            <p className="mt-4 text-xs text-muted-foreground/60">
               Payment will be requested only after approval.
             </p>
 
-            <div className="mt-6 flex gap-4 w-full">
+            <div className="mt-6 flex gap-3 w-full">
               <Button
                 variant="secondary"
-                onClick={() => navigate("/services")}
+                onClick={() => setOpen(false)}
                 className="flex-1"
               >
                 Browse services
@@ -275,26 +302,31 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
           </div>
         ) : (
           <>
-            <DialogHeader>
-              <DialogTitle>Schedule your appointment</DialogTitle>
+            <DialogHeader className="text-start mt-2 shrink-0">
+              <DialogTitle className="font-serif">{service.title}</DialogTitle>
+              <DialogDescription className="text-sm font-sans">
+                Schedule your appointment
+              </DialogDescription>
             </DialogHeader>
 
-            <BookingCalendar
-              bookedDates={bookedDates}
-              errors={error}
-              isLoading={isLoading}
-              slots={timeSlots}
-              date={date}
-              setDate={setDate}
-              time={time}
-              setTime={setTime}
-            />
+            <div className="flex-1 min-h-0 overflow-y-auto px-1">
+              <BookingCalendar
+                bookedDates={bookedDates}
+                errors={error}
+                isLoading={isLoading}
+                slots={timeSlots}
+                date={date}
+                setDate={setDate}
+                time={time}
+                setTime={setTime}
+              />
 
-            {errors.date && (
-              <p className="text-sm text-destructive">{errors.date}</p>
-            )}
+              {errors.date && (
+                <p className="text-sm text-destructive">{errors.date}</p>
+              )}
+            </div>
 
-            <DialogFooter className="flex flex-col md:flex-row-reverse w-full md:justify-start gap-2">
+            <DialogFooter className="flex flex-col md:flex-row-reverse w-full md:justify-start gap-2 shrink-0 border-t pt-4 mt-2">
               <Button
                 disabled={addAppointmentMutation.isPending}
                 onClick={handleConfirm}

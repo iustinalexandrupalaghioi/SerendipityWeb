@@ -1,14 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { useCourses } from "@/hooks/useCourses";
-import { format } from "date-fns";
-import {
-  AlertCircle,
-  ArrowLeft,
-  BarChart3,
-  CalendarDays,
-  Clock,
-  Users,
-} from "lucide-react";
+import { ArrowLeft, BarChart3, Clock, Users } from "lucide-react";
 import { Link, Navigate, useParams } from "react-router";
 import Loader from "../ui/loader";
 import CourseDayCard from "./CourseDayCard";
@@ -50,15 +42,6 @@ export default function CourseDetails() {
               ) : (
                 <Badge variant="destructive">Not available</Badge>
               )}
-              {course?.is_open && course?.remaining_spots <= 3 && (
-                <Badge
-                  variant="outline"
-                  className="border-destructive/40 bg-destructive/10 text-destructive"
-                >
-                  <AlertCircle className="mr-1 h-3 w-3" />
-                  Only {course?.remaining_spots} spots left
-                </Badge>
-              )}
             </div>
 
             <h1 className="mt-5 text-3xl font-serif font-bold text-primary-foreground md:text-4xl lg:text-5xl text-balance leading-tight">
@@ -81,20 +64,6 @@ export default function CourseDetails() {
                   label: course?.level,
                   className: "capitalize",
                 },
-                ...(course?.is_open
-                  ? [
-                      {
-                        icon: <CalendarDays className="h-4 w-4" />,
-                        label:
-                          course?.start_date &&
-                          `Starts ${format(course.start_date, "dd MMM yyyy")}`,
-                      },
-                      {
-                        icon: <Users className="h-4 w-4" />,
-                        label: `${course?.remaining_spots} of ${course?.available_spots} spots`,
-                      },
-                    ]
-                  : []),
               ].map((item, i) => (
                 <span
                   key={i}
@@ -231,18 +200,6 @@ export default function CourseDetails() {
                     <BarChart3 className="h-4 w-4 text-accent shrink-0" />
                     {course?.level} level
                   </li>
-                  {course?.is_open && (
-                    <>
-                      <li className="flex items-center gap-2 text-muted-foreground">
-                        <CalendarDays className="h-4 w-4 text-accent shrink-0" />
-                        Starts {format(course.start_date, "dd MMM yyyy")}
-                      </li>
-                      <li className="flex items-center gap-2 text-muted-foreground">
-                        <Users className="h-4 w-4 text-accent shrink-0" />
-                        {course.remaining_spots} spots left
-                      </li>
-                    </>
-                  )}
                 </ul>
               </div>
             </div>
