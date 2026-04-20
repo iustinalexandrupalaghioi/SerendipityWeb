@@ -126,7 +126,7 @@ const CourseCard = ({ course, index }: CourseCardProps) => {
                 € {course.price}
               </span>
               <span className="text-xs text-muted-foreground">
-                Advance:{" "}
+                Deposit:{" "}
                 <span className="font-semibold text-gold/70">
                   € {course.advance_price}
                 </span>
