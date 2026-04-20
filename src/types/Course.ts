@@ -5,6 +5,7 @@ export type Course = {
   title: string;
   description: string;
   location: string;
+  display_order: number;
   start_date: string;
   available_spots: number;
   remaining_spots: number;
