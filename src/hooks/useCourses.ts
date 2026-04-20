@@ -11,7 +11,7 @@ const fetchCourses = async (filters?: CourseFilters): Promise<Course[]> => {
     .from("course")
     .select("*, course_day(*, course_day_activity(*)), course_enrollment(*)")
     .order("day_number", { referencedTable: "course_day", ascending: true })
-    .order("created_at", { ascending: false });
+    .order("display_order", { ascending: true });
   if (typeof filters?.isOpen === "boolean") {
     query = query.eq("is_open", filters.isOpen);
   }
