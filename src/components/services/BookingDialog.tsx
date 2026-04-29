@@ -109,23 +109,20 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
 
       const endTime = endDate.toTimeString().slice(0, 5);
 
-      const { error } = await supabase
-        .from("appointment")
-        .insert([
-          {
-            service_id: values.service_id,
-            user_id: values.user_id,
-            name: values.name,
-            email: values.email,
-            date: values.date,
-            start_time: values.start_time,
-            duration: values.duration,
-            price: values.price,
-            advance_payment: service.advance_price,
-            end_time: endTime,
-          },
-        ])
-        .single();
+      const { error } = await supabase.functions.invoke("create-appointment", {
+        body: {
+          service_id: values.service_id,
+          user_id: values.user_id,
+          name: values.name,
+          email: values.email,
+          date: values.date,
+          start_time: values.start_time,
+          duration: values.duration,
+          price: values.price,
+          advance_payment: service.advance_price,
+          end_time: endTime,
+        },
+      });
 
       if (error) throw error;
     },
@@ -135,11 +132,18 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
       setSubmitted(true);
     },
 
-    onError: (error: any) => {
-      if (error.code === "23505") {
-        setBookingError(
-          "You already have an active appointment. Please wait until it is confirmed or cancel it.",
-        );
+    onError: async (error: any) => {
+      const status = error?.context?.status;
+      const body = await error?.context?.json().catch(() => null);
+      const message = body?.error;
+
+      if (status === 409) {
+        setBookingError(message ?? "You already have an active appointment.");
+        return;
+      }
+
+      if (status === 400) {
+        setBookingError(message ?? "Invalid booking details.");
         return;
       }
 
@@ -167,7 +171,9 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
 
     const formattedDate = format(date, "yyyy-MM-dd");
 
-    const fullName = user.user_metadata.full_name.trim();
+    const fullName =
+      user.user_metadata.full_name ??
+      user.user_metadata.first_name + " " + user.user_metadata.last_name; // Fallback if full_name is not available
 
     addAppointmentMutation.mutate({
       service_id: service.id,
