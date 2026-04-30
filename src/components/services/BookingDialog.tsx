@@ -121,6 +121,7 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
           price: values.price,
           advance_payment: service.advance_price,
           end_time: endTime,
+          action_type: "create_appointment",
         },
       });
 
