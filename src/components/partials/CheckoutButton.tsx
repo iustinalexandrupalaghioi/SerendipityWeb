@@ -38,8 +38,8 @@ const CheckoutButton = ({
 
       if (error) throw new Error(error.message);
 
-      if (data?.url) {
-        window.location.href = data.url;
+      if (data?.data?.url) {
+        window.location.href = data.data.url;
       } else {
         throw new Error("No checkout URL returned");
       }
