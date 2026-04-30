@@ -13,15 +13,15 @@ const Footer = () => {
   const { data, error, isLoading } = useQuery<BusinessHour[]>({
     queryKey: ["business-hours"],
     queryFn: async () => {
-      const { data, error } =
-        await supabase.functions.invoke<BusinessHour[]>("get-business-hours");
+      const { data, error } = await supabase.functions.invoke<{
+        data: BusinessHour[];
+      }>("get-business-hours");
 
       if (error) throw error;
 
-      if (!data || data.length === 0)
-        throw new Error("No business hours returned");
+      if (!data?.data?.length) throw new Error("No business hours returned");
 
-      return data;
+      return data.data;
     },
     staleTime: 24 * 60 * 60 * 1000,
   });
