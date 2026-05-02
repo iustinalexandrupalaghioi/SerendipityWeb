@@ -3,11 +3,11 @@ import type { User } from "./User";
 
 export const APPOINTMENT_STATUSES = [
   "pending",
-  "approved",
+  "accepted",
   "confirmed",
-  "rejected",
+  "declined",
   "completed",
-  "canceled",
+  "cancelled",
 ] as const;
 
 export type AppointmentStatus = (typeof APPOINTMENT_STATUSES)[number];

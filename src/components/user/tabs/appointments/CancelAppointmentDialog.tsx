@@ -29,12 +29,12 @@ const CancelAppointmentDialog = ({ id }: Props) => {
 
       const { error } = await supabase
         .from("appointment")
-        .update({ status: "canceled" })
+        .update({ status: "cancelled" })
         .eq("id", id);
 
       if (error) throw error;
 
-      toast.success("Appointment canceled successfully.");
+      toast.success("Appointment cancelled successfully.");
 
       // refetch appointments
       queryClient.invalidateQueries({ queryKey: ["appointments"] });

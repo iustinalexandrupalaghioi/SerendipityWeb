@@ -25,10 +25,10 @@ const statusConfig: Record<
     icon: Clock,
     label: "Upcoming",
   },
-  approved: {
+  accepted: {
     className: "bg-blue-100 text-blue-800 border-blue-300",
     icon: BadgeCheck,
-    label: "Approved",
+    label: "Accepted",
   },
   confirmed: {
     // was green, now uses primary
@@ -36,10 +36,10 @@ const statusConfig: Record<
     icon: CheckCircle2,
     label: "Confirmed",
   },
-  rejected: {
+  declined: {
     className: "bg-destructive/10 text-destructive border-destructive/40",
     icon: Ban,
-    label: "Rejected",
+    label: "Declined",
   },
   completed: {
     // was emerald, now uses accent
@@ -47,7 +47,7 @@ const statusConfig: Record<
     icon: CheckCircle2,
     label: "Completed",
   },
-  canceled: {
+  cancelled: {
     className: "bg-muted text-muted-foreground border-border",
     icon: XCircle,
     label: "Canceled",
@@ -56,19 +56,19 @@ const statusConfig: Record<
 
 const AppointmentCard = ({ apt }: { apt: Appointment }) => {
   const { icon: StatusIcon, label, className } = statusConfig[apt.status];
-  const isRejected = apt.status === "rejected";
+  const isDeclined = apt.status === "declined";
   const hasNote =
-    !!apt.notes && ["approved", "confirmed", "completed"].includes(apt.status);
+    !!apt.notes && ["accepted", "confirmed", "completed"].includes(apt.status);
   const depositUnpaid =
     apt.service.advance_price > 0 &&
     !apt.advance_payment_paid &&
-    apt.status === "approved";
+    apt.status === "accepted";
 
   return (
     <div
       className={cn(
         "rounded-xl border bg-card overflow-hidden transition-shadow hover:shadow-sm",
-        isRejected ? "border-destructive/30" : "border-border",
+        isDeclined ? "border-destructive/30" : "border-border",
       )}
     >
       <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
@@ -88,13 +88,13 @@ const AppointmentCard = ({ apt }: { apt: Appointment }) => {
           <div
             className={cn(
               "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-              isRejected ? "bg-destructive/10" : "bg-muted",
+              isDeclined ? "bg-destructive/10" : "bg-muted",
             )}
           >
             <Calendar
               className={cn(
                 "h-4 w-4",
-                isRejected ? "text-destructive" : "text-muted-foreground",
+                isDeclined ? "text-destructive" : "text-muted-foreground",
               )}
             />
           </div>
@@ -111,7 +111,7 @@ const AppointmentCard = ({ apt }: { apt: Appointment }) => {
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
               <span className="font-semibold">€ {apt.service.price}</span>
 
-              {apt.service.advance_price > 0 && !isRejected && (
+              {apt.service.advance_price > 0 && !isDeclined && (
                 <span className="flex items-center gap-1.5 text-muted-foreground">
                   <span
                     className={cn(
@@ -135,7 +135,7 @@ const AppointmentCard = ({ apt }: { apt: Appointment }) => {
 
             {(depositUnpaid ||
               apt.status === "pending" ||
-              apt.status === "approved") && (
+              apt.status === "accepted") && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {depositUnpaid && (
                   <CheckoutButton
@@ -146,7 +146,7 @@ const AppointmentCard = ({ apt }: { apt: Appointment }) => {
                     className="bg-accent text-accent-foreground hover:bg-accent/90 w-full md:max-w-fit"
                   />
                 )}
-                {(apt.status === "pending" || apt.status === "approved") && (
+                {(apt.status === "pending" || apt.status === "accepted") && (
                   <CancelAppointmentDialog id={apt.id} />
                 )}
               </div>
@@ -155,12 +155,12 @@ const AppointmentCard = ({ apt }: { apt: Appointment }) => {
         </div>
       </div>
 
-      {isRejected && apt.notes && (
+      {isDeclined && apt.notes && (
         <div className="flex items-start gap-2.5 border-t border-destructive/20 bg-destructive/5 px-5 py-3">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-destructive" />
           <div>
             <p className="text-xs font-semibold text-destructive">
-              Rejection reason
+              Decline reason
             </p>
             <p className="mt-0.5 text-sm text-destructive/80">{apt.notes}</p>
           </div>
