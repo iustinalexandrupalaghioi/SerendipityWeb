@@ -20,7 +20,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import type { Course } from "@/types/Course";
 import { SimpleCalendarInput } from "../partials/SimpleCalendarInput";
-import CheckoutButton from "../partials/CheckoutButton";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 interface Props {
@@ -46,40 +45,37 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alreadyEnrolled, setAlreadyEnrolled] = useState(false);
+  const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   const [paymentType, setPaymentType] = useState<"deposit" | "full">("deposit");
-  const [paymentAmount, setPaymentAmount] = useState(course.advance_price);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    setPaymentAmount(
-      paymentType === "full" ? course.price : course.advance_price,
-    );
-  }, [paymentType]);
 
   const hundredYearsAgo = useMemo(() => {
     return new Date(new Date().getFullYear() - 100, 0, 1);
   }, []);
 
-  // Prefill user data safely
   useEffect(() => {
     if (!open) return;
 
     if (user) {
-      setFullName(user.user_metadata.full_name.trim());
+      setFullName(
+        user.user_metadata.full_name
+          ? user.user_metadata.full_name.trim()
+          : user.user_metadata.first_name.trim() +
+              " " +
+              user.user_metadata.last_name.trim(),
+      );
       setEmail(user.email.trim() ?? "");
       setDob(user.user_metadata?.date_of_birth ?? "");
     }
 
-    setSubmitted(false);
     setErrors({});
+    setAlreadyEnrolled(false);
   }, [open, user]);
 
   const validate = () => {
@@ -95,49 +91,53 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const createEnrollment = async () => {
-    const { error, data } = await supabase
-      .from("course_enrollment")
-      .insert({
-        course_id: course.id,
-        user_id: user!.id,
-        course_date: course.start_date,
-        price: Number(course.price),
-        advance_price: Number(course.advance_price),
-        payment_type: paymentType,
-      })
-      .select()
-      .single();
-
-    if (!error && data) {
-      setEnrollmentId(data.id);
-    }
-
-    return error;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validate()) return;
 
     try {
       setLoading(true);
 
-      const error = await createEnrollment();
+      const { data, error } = await supabase.functions.invoke(
+        "create-enrollment",
+        {
+          body: {
+            course_id: course.id,
+            user_id: user!.id,
+            course_date: course.start_date,
+            price: Number(course.price),
+            advance_price: Number(course.advance_price),
+            payment_type: paymentType,
+            dob,
+          },
+        },
+      );
 
-      if (error) {
-        if (error.code === "23505") {
-          setAlreadyEnrolled(true);
-          return;
-        }
+      if (error) throw error;
 
-        throw error;
+      const { checkout_url } = data?.data ?? data;
+
+      if (checkout_url) {
+        window.location.href = checkout_url;
+      } else {
+        toast.error("Could not redirect to checkout. Please try again.");
+      }
+    } catch (err: any) {
+      const status = err?.context?.status;
+      const body = await err?.context?.json().catch(() => null);
+      const message = body?.error;
+
+      if (status === 409) {
+        setAlreadyEnrolled(true);
+        return;
       }
 
-      setSubmitted(true);
-    } catch (err: any) {
-      toast.error(err?.message || "Something went wrong while enrolling.");
+      if (status === 400) {
+        setEnrollmentError(message ?? "Invalid enrollment details.");
+        return;
+      }
+
+      toast.error(message ?? "Something went wrong while enrolling.");
     } finally {
       setLoading(false);
     }
@@ -197,42 +197,27 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
               </Button>
             </div>
           </div>
-        ) : submitted ? (
+        ) : enrollmentError ? (
           <div className="flex flex-col items-center py-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent/20">
-              <GraduationCap className="h-8 w-8 text-accent" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/20">
+              <GraduationCap className="h-8 w-8 text-destructive" />
             </div>
 
-            <h3 className="mt-4 font-serif text-xl font-bold text-primary">
-              Enrollment submitted
+            <h3 className="mt-4 font-serif text-xl font-bold text-destructive">
+              Enrollment failed
             </h3>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              You've enrolled to{" "}
-              <span className="font-medium text-primary">{course.title}</span>.
+              {enrollmentError}
             </p>
 
-            <p className="mt-3 text-sm text-muted-foreground">
-              To reserve your spot, please complete the payment of{" "}
-              <span className="font-semibold text-primary">
-                € {paymentAmount}
-              </span>
-              .
-            </p>
-
-            <div className="mt-6 w-full">
-              {enrollmentId && (
-                <CheckoutButton
-                  id={enrollmentId}
-                  type="enrollment"
-                  text={`Confirm enrollment - € ${paymentAmount}`}
-                />
-              )}
-            </div>
-
-            <p className="mt-4 text-xs text-muted-foreground">
-              If you have any questions, feel free to contact me on email.
-            </p>
+            <Button
+              className="mt-6 w-full"
+              variant="secondary"
+              onClick={() => setEnrollmentError(null)}
+            >
+              Go back
+            </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 pt-2">
@@ -306,12 +291,6 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
                   </Label>
                 </div>
               </RadioGroup>
-
-              {errors.payFullAmount && (
-                <p className="text-sm text-destructive">
-                  {errors.payFullAmount}
-                </p>
-              )}
             </div>
 
             <Button
@@ -319,7 +298,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
               disabled={loading}
               className="mt-2 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold"
             >
-              {loading ? "Submitting..." : "Submit enrollment"}
+              {loading ? "Redirecting to payment..." : "Submit enrollment"}
             </Button>
           </form>
         )}
