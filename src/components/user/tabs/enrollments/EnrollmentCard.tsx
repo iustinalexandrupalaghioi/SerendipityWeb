@@ -19,7 +19,7 @@ const statusConfig: Record<
   submitted: {
     className: "bg-yellow-100 text-yellow-800 border-yellow-300",
     icon: Clock,
-    label: "Upcoming",
+    label: "Submitted",
   },
   confirmed: {
     className: "bg-primary/10 text-primary border-primary/30",
@@ -31,16 +31,16 @@ const statusConfig: Record<
     icon: CheckCircle2,
     label: "Completed",
   },
-  canceled: {
+  cancelled: {
     className: "bg-muted text-muted-foreground border-border",
     icon: XCircle,
-    label: "Canceled",
+    label: "Cancelled",
   },
 };
 
 const EnrollmentCard = ({ enr }: { enr: Enrollment }) => {
   const { icon: StatusIcon, label, className } = statusConfig[enr.status];
-  const isCanceled = enr.status === "canceled";
+  const isCancelled = enr.status === "cancelled";
   const depositUnpaid = !enr.advance_payment_paid && enr.status === "submitted";
 
   return (
@@ -65,31 +65,36 @@ const EnrollmentCard = ({ enr }: { enr: Enrollment }) => {
 
           <div className="flex-1 min-w-0">
             <p className="font-medium text-card-foreground">
-              {enr.course?.title}
+              {enr.course_session?.course?.title}
             </p>
 
             {/* Course meta */}
             <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground">
-              <span>{format(enr.course_date, "d MMM yyyy")}</span>
-              {enr.course?.duration_days && (
-                <>
-                  <span className="text-border">·</span>
-                  <span>{enr.course.duration_days}day(s)</span>
-                </>
-              )}
-              {enr.course?.level && (
-                <>
-                  <span className="text-border">·</span>
-                  <span className="capitalize">{enr.course.level}</span>
-                </>
-              )}
+              <span>
+                {enr.course_session?.start_date &&
+                  format(
+                    new Date(enr.course_session?.start_date),
+                    "d MMM yyyy",
+                  )}
+              </span>
+              <>
+                <span className="text-border">·</span>
+                <span>{enr.course_session?.course?.duration_days} day(s) </span>
+              </>
+
+              <>
+                <span className="text-border">·</span>
+                <span className="capitalize">
+                  {enr.course_session?.course?.level}
+                </span>
+              </>
             </div>
 
             {/* Price row */}
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
               <span className="font-semibold">€ {enr.price}</span>
 
-              {enr.advance_price > 0 && !isCanceled && (
+              {enr.advance_price && enr.advance_price > 0 && !isCancelled && (
                 <span className="flex items-center gap-1.5 text-muted-foreground">
                   <span
                     className={cn(

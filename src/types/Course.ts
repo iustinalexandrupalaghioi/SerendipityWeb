@@ -1,24 +1,23 @@
 import type { User } from "./User";
+export type CourseLevel = "beginner" | "intermediate" | "advanced";
 
 export type Course = {
   id: string;
   title: string;
   description: string;
-  location: string;
   display_order: number;
-  start_date: string;
-  available_spots: number;
-  remaining_spots: number;
-  is_open: boolean;
-  level: "beginner" | "intermediate" | "advanced";
+  location: string;
+  level: CourseLevel;
   price: number;
   advance_price: number;
   duration_days: number;
   image_url: string;
   image_path: string;
-  created_at: string;
+  available_spots: number;
+  remaining_spots: number;
+  is_open: boolean;
   course_day?: CourseDay[];
-  course_enrollment?: Enrollment[];
+  course_session?: CourseSession[];
 };
 
 export type CourseDay = {
@@ -28,7 +27,6 @@ export type CourseDay = {
   title: string;
   image_url: string;
   image_path: string;
-  created_at: string;
   course?: Course;
   course_day_activity?: CourseDayActivity[];
 };
@@ -38,27 +36,37 @@ export type CourseDayActivity = {
   course_day_id: string;
   course_day?: CourseDay;
   activity: string;
-  created_at: string;
 };
 
 export type EnrollmentStatus =
   | "submitted"
   | "confirmed"
-  | "canceled"
+  | "cancelled"
   | "completed";
 
 export type Enrollment = {
   id: string;
-  course_id: string;
+  session_id: string;
   user_id: string;
   profile?: User;
   status: EnrollmentStatus;
   enrollment_date: string;
   course_date: string;
   price: number;
+  payment_type: "deposit" | "full";
   advance_price: number;
   advance_payment_paid: boolean;
-  payment_type: "deposit" | "full";
-  created_at: string;
+  course_session?: CourseSession;
+};
+
+export type CourseSession = {
+  id: string;
+  course_id: string;
+  start_date: string;
+  available_spots: number;
+  remaining_spots: number;
+  is_open: boolean;
+  price: number;
+  advance_price: number;
   course?: Course;
 };

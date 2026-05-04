@@ -14,6 +14,7 @@ const ServicesGrid = () => {
     setActiveCategory(id);
     tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
   const {
     data: services,
     error: servicesError,
