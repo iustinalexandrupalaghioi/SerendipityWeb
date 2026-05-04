@@ -23,7 +23,7 @@ const statusConfig: Record<
   pending: {
     className: "bg-yellow-100 text-yellow-800 border-yellow-300",
     icon: Clock,
-    label: "Upcoming",
+    label: "Pending",
   },
   accepted: {
     className: "bg-blue-100 text-blue-800 border-blue-300",
@@ -50,7 +50,7 @@ const statusConfig: Record<
   cancelled: {
     className: "bg-muted text-muted-foreground border-border",
     icon: XCircle,
-    label: "Canceled",
+    label: "Cancelled",
   },
 };
 

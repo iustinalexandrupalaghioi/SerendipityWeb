@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import type { Course } from "@/types/Course";
-import { ArrowRight, BarChart3, Check, Clock } from "lucide-react";
+import { ArrowRight, BarChart3, Check, Clock, Users } from "lucide-react";
 import { Link } from "react-router";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -77,6 +77,19 @@ const CourseCard = ({ course, index }: CourseCardProps) => {
               <BarChart3 className="h-4 w-4" />
               {course.level}
             </span>
+            {course.is_open && (
+              <span className="flex items-center gap-1.5">
+                <Users className="h-4 w-4" />
+                <span>
+                  <span className="text-foreground font-medium">
+                    {course.remaining_spots}
+                  </span>
+                  <span className="text-muted-foreground">
+                    /{course.available_spots} spots left
+                  </span>
+                </span>
+              </span>
+            )}
           </div>
 
           {/* Highlights */}
@@ -111,6 +124,25 @@ const CourseCard = ({ course, index }: CourseCardProps) => {
                   € {course.advance_price}
                 </span>
               </span>
+              {course.is_open && (
+                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Users className="h-4 w-4" />
+                  <span>
+                    <span
+                      className={
+                        course.remaining_spots === 0
+                          ? "text-destructive font-medium"
+                          : "text-foreground font-medium"
+                      }
+                    >
+                      {course.remaining_spots}
+                    </span>
+                    <span className="text-muted-foreground">
+                      /{course.available_spots} spots left
+                    </span>
+                  </span>
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-2">
               {course.is_open && (

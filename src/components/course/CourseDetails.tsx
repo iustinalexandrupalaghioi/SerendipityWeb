@@ -64,15 +64,22 @@ export default function CourseDetails() {
                   label: course?.level,
                   className: "capitalize",
                 },
-              ].map((item, i) => (
-                <span
-                  key={i}
-                  className={`inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-3 py-1.5 text-sm text-primary-foreground/80 ${item.className ?? ""}`}
-                >
-                  <span className="text-accent">{item.icon}</span>
-                  {item.label}
-                </span>
-              ))}
+                {
+                  icon: <Users className="h-4 w-4" />,
+                  label: `${course?.remaining_spots} / ${course?.available_spots} spots left`,
+                  visible: course?.is_open,
+                },
+              ]
+                .filter((item) => item.visible !== false)
+                .map((item, i) => (
+                  <span
+                    key={i}
+                    className={`inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/10 px-3 py-1.5 text-sm text-primary-foreground/80 ${item.className ?? ""}`}
+                  >
+                    <span className="text-accent">{item.icon}</span>
+                    {item.label}
+                  </span>
+                ))}
             </div>
 
             {/* Price + CTA */}

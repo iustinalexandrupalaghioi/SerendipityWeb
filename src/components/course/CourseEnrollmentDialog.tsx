@@ -2,6 +2,7 @@ import { GraduationCap } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ import { cn } from "@/lib/utils";
 import type { Course } from "@/types/Course";
 import { SimpleCalendarInput } from "../partials/SimpleCalendarInput";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Combobox } from "../partials/Combobox";
 
 interface Props {
   course: Course;
@@ -30,14 +32,9 @@ interface Props {
 function calculateAge(dob: string) {
   const today = new Date();
   const birth = new Date(dob);
-
   let age = today.getFullYear() - birth.getFullYear();
   const month = today.getMonth() - birth.getMonth();
-
-  if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) {
-    age--;
-  }
-
+  if (month < 0 || (month === 0 && today.getDate() < birth.getDate())) age--;
   return age;
 }
 
@@ -52,12 +49,26 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
+  const [selectedSession, setSelectedSession] = useState("");
   const [paymentType, setPaymentType] = useState<"deposit" | "full">("deposit");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const hundredYearsAgo = useMemo(() => {
-    return new Date(new Date().getFullYear() - 100, 0, 1);
-  }, []);
+  const hundredYearsAgo = useMemo(
+    () => new Date(new Date().getFullYear() - 100, 0, 1),
+    [],
+  );
+
+  const sessionItems = useMemo(
+    () =>
+      (course.course_session ?? [])
+        .filter((s) => s.is_open && s.remaining_spots > 0)
+        .map((s) => ({
+          label: format(new Date(s.start_date), "dd MMM yyyy"),
+          searchValue: format(new Date(s.start_date), "dd MMM yyyy"),
+          value: s.id,
+        })),
+    [course],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -66,16 +77,16 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
       setFullName(
         user.user_metadata.full_name
           ? user.user_metadata.full_name.trim()
-          : user.user_metadata.first_name.trim() +
-              " " +
-              user.user_metadata.last_name.trim(),
+          : `${user.user_metadata.first_name.trim()} ${user.user_metadata.last_name.trim()}`,
       );
       setEmail(user.email.trim() ?? "");
       setDob(user.user_metadata?.date_of_birth ?? "");
     }
 
+    setSelectedSession("");
     setErrors({});
     setAlreadyEnrolled(false);
+    setEnrollmentError(null);
   }, [open, user]);
 
   const validate = () => {
@@ -86,6 +97,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
     if (!dob) newErrors.dob = "Date of birth is required.";
     else if (calculateAge(dob) < 18)
       newErrors.dob = "You must be at least 18 years old.";
+    if (!selectedSession) newErrors.session = "Please select a session.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -103,12 +115,16 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
         {
           body: {
             course_id: course.id,
+            session_id: selectedSession,
             user_id: user!.id,
-            course_date: course.start_date,
-            price: Number(course.price),
-            advance_price: Number(course.advance_price),
             payment_type: paymentType,
             dob,
+            action_type: "create_enrollment",
+            price: course.course_session?.find((s) => s.id === selectedSession)
+              ?.price,
+            advance_price: course.course_session?.find(
+              (s) => s.id === selectedSession,
+            )?.advance_price,
           },
         },
       );
@@ -268,8 +284,17 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
             </div>
 
             <div className="space-y-2">
-              <Label>Payment type</Label>
+              <Label>Session</Label>
+              <Combobox
+                items={sessionItems}
+                value={selectedSession}
+                placeholder="Choose a session..."
+                onChange={setSelectedSession}
+              />
+            </div>
 
+            <div className="space-y-2">
+              <Label>Payment type</Label>
               <RadioGroup
                 value={paymentType}
                 onValueChange={(value: "deposit" | "full") =>

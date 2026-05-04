@@ -13,7 +13,7 @@ const fetchEnrollmentsForUser = async (
 
   const { data, error } = await supabase
     .from("course_enrollment")
-    .select("*, course(*), profile(*)")
+    .select("*, course_session!inner(*, course!inner(*)), profile(*)")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .range(from, to);

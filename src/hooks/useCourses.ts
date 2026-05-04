@@ -9,7 +9,7 @@ export interface CourseFilters {
 const fetchCourses = async (filters?: CourseFilters): Promise<Course[]> => {
   let query = supabase
     .from("course")
-    .select("*, course_day(*, course_day_activity(*)), course_enrollment(*)")
+    .select("*, course_session(*),  course_day(*, course_day_activity(*))")
     .order("day_number", { referencedTable: "course_day", ascending: true })
     .order("display_order", { ascending: true });
   if (typeof filters?.isOpen === "boolean") {
@@ -17,7 +17,7 @@ const fetchCourses = async (filters?: CourseFilters): Promise<Course[]> => {
   }
   const { data, error } = await query;
   if (error) {
-    console.error("Error fetching appointments:", error);
+    console.error("Error fetching courses:", error);
     throw new Error(error.message);
   }
 
