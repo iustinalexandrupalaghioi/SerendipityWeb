@@ -288,7 +288,7 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
               <Combobox
                 items={sessionItems}
                 value={selectedSession}
-                placeholder="Choose a session..."
+                placeholder="Pick a date..."
                 onChange={setSelectedSession}
               />
             </div>
