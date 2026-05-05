@@ -1,8 +1,8 @@
+import { format } from "date-fns";
 import { GraduationCap } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
-import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,6 @@ import { cn } from "@/lib/utils";
 import type { Course } from "@/types/Course";
 import { SimpleCalendarInput } from "../partials/SimpleCalendarInput";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Combobox } from "../partials/Combobox";
 
 interface Props {
   course: Course;
@@ -56,18 +55,6 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
   const hundredYearsAgo = useMemo(
     () => new Date(new Date().getFullYear() - 100, 0, 1),
     [],
-  );
-
-  const sessionItems = useMemo(
-    () =>
-      (course.course_session ?? [])
-        .filter((s) => s.is_open && s.remaining_spots > 0)
-        .map((s) => ({
-          label: format(new Date(s.start_date), "dd MMM yyyy"),
-          searchValue: format(new Date(s.start_date), "dd MMM yyyy"),
-          value: s.id,
-        })),
-    [course],
   );
 
   useEffect(() => {
@@ -285,12 +272,26 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
 
             <div className="space-y-2">
               <Label>Session</Label>
-              <Combobox
-                items={sessionItems}
-                value={selectedSession}
-                placeholder="Pick a date..."
-                onChange={setSelectedSession}
-              />
+
+              <div className="flex items-center flex-wrap gap-3 overflow-x-auto pb-1">
+                {(course.course_session ?? [])
+                  .filter((s) => s.is_open && s.remaining_spots > 0)
+                  .map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => setSelectedSession(s.id)}
+                      type="button"
+                      className={cn(
+                        "shrink-0 rounded-full border px-5 py-2 text-sm font-medium transition-all",
+                        selectedSession === s.id
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground",
+                      )}
+                    >
+                      {format(s.start_date, "dd MMM yyyy")}
+                    </button>
+                  ))}
+              </div>
             </div>
 
             <div className="space-y-2">
