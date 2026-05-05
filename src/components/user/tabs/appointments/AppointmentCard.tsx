@@ -21,17 +21,16 @@ const statusConfig: Record<
   { className: string; icon: LucideIcon; label: string }
 > = {
   pending: {
-    className: "bg-yellow-100 text-yellow-800 border-yellow-300",
+    className: "bg-gold-light text-gold-dark border-gold",
     icon: Clock,
     label: "Pending",
   },
   accepted: {
-    className: "bg-blue-100 text-blue-800 border-blue-300",
+    className: "bg-gold-light text-gold-dark border-gold",
     icon: BadgeCheck,
     label: "Accepted",
   },
   confirmed: {
-    // was green, now uses primary
     className: "bg-primary/10 text-primary border-primary/30",
     icon: CheckCircle2,
     label: "Confirmed",
@@ -42,8 +41,7 @@ const statusConfig: Record<
     label: "Declined",
   },
   completed: {
-    // was emerald, now uses accent
-    className: "bg-accent/10 text-accent border-accent/30",
+    className: "bg-primary/10 text-primary border-primary/30",
     icon: CheckCircle2,
     label: "Completed",
   },
@@ -57,6 +55,7 @@ const statusConfig: Record<
 const AppointmentCard = ({ apt }: { apt: Appointment }) => {
   const { icon: StatusIcon, label, className } = statusConfig[apt.status];
   const isDeclined = apt.status === "declined";
+  const isCancelled = apt.status === "cancelled";
   const hasNote =
     !!apt.notes && ["accepted", "confirmed", "completed"].includes(apt.status);
   const depositUnpaid =
@@ -67,112 +66,159 @@ const AppointmentCard = ({ apt }: { apt: Appointment }) => {
   return (
     <div
       className={cn(
-        "rounded-xl border bg-card overflow-hidden transition-shadow hover:shadow-sm",
-        isDeclined ? "border-destructive/30" : "border-border",
+        "relative rounded-xl overflow-hidden border border-border bg-background transition-all duration-300 hover:border-gold/50 hover:shadow-xl hover:shadow-gold/5",
+        isDeclined
+          ? "border-destructive/30 hover:border-destructive/50 hover:shadow-destructive/5"
+          : "",
+        isCancelled && "opacity-70",
       )}
     >
-      <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-        {/* Badge on top for mobile */}
-        <Badge
-          variant="outline"
-          className={cn(
-            "self-start rounded-full text-xs sm:order-last sm:shrink-0",
-            className,
-          )}
-        >
-          <StatusIcon className="mr-1 h-3 w-3" />
-          {label}
-        </Badge>
+      {/* Left accent bar */}
+      <div
+        className={cn(
+          "absolute left-0 top-0 bottom-0 w-[3px]",
+          isDeclined ? "bg-destructive" : isCancelled ? "bg-border" : "bg-gold",
+        )}
+      />
 
-        <div className="flex items-start gap-3 flex-1 min-w-0">
+      <div className="p-4 pl-6 sm:p-5 sm:flex sm:items-start sm:gap-3">
+        {/* Mobile: icon + badge in one row. Desktop: icon only */}
+        <div className="flex items-center gap-2 mb-2 sm:mb-0">
           <div
             className={cn(
-              "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-              isDeclined ? "bg-destructive/10" : "bg-muted",
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px]",
+              isDeclined
+                ? "bg-destructive/10"
+                : isCancelled
+                  ? "bg-muted"
+                  : "bg-primary",
             )}
           >
             <Calendar
               className={cn(
-                "h-4 w-4",
-                isDeclined ? "text-destructive" : "text-muted-foreground",
+                "h-[17px] w-[17px]",
+                isDeclined
+                  ? "text-destructive"
+                  : isCancelled
+                    ? "text-muted-foreground"
+                    : "text-gold",
               )}
             />
           </div>
 
-          <div className="flex-1 min-w-0">
-            <p className="font-medium text-card-foreground">
+          {/* Badge — mobile only */}
+          <Badge
+            variant="outline"
+            className={cn(
+              "sm:hidden rounded-full text-[11px] font-semibold",
+              className,
+            )}
+          >
+            <StatusIcon className="mr-1 h-3 w-3" />
+            {label}
+          </Badge>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2">
+            <p className="font-semibold text-card-foreground leading-snug">
               {apt.service.title}
             </p>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              {format(apt.date, "d MMM yyyy")} · {apt.start_time.slice(0, 5)} –{" "}
-              {apt.end_time.slice(0, 5)}
-            </p>
 
-            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-              <span className="font-semibold">€ {apt.service.price}</span>
-
-              {apt.service.advance_price > 0 && !isDeclined && (
-                <span className="flex items-center gap-1.5 text-muted-foreground">
-                  <span
-                    className={cn(
-                      "inline-block h-1.5 w-1.5 rounded-full",
-                      apt.advance_payment_paid ? "bg-primary" : "bg-yellow-500",
-                    )}
-                  />
-                  Deposit € {apt.service.advance_price} ·{" "}
-                  <span
-                    className={
-                      apt.advance_payment_paid
-                        ? "text-primary"
-                        : "text-yellow-600"
-                    }
-                  >
-                    {apt.advance_payment_paid ? "paid" : "not paid"}
-                  </span>
-                </span>
+            {/* Badge — desktop only */}
+            <Badge
+              variant="outline"
+              className={cn(
+                "hidden sm:inline-flex shrink-0 rounded-full text-[11px] font-semibold",
+                className,
               )}
-            </div>
+            >
+              <StatusIcon className="mr-1 h-3 w-3" />
+              {label}
+            </Badge>
+          </div>
 
-            {(depositUnpaid ||
-              apt.status === "pending" ||
-              apt.status === "accepted") && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {depositUnpaid && (
-                  <CheckoutButton
-                    id={apt.id}
-                    size="sm"
-                    text="Pay deposit"
-                    type="appointment"
-                    className="bg-accent text-accent-foreground hover:bg-accent/90 w-full md:max-w-fit"
-                  />
+          {/* Meta */}
+          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+            <span>{format(apt.date, "d MMM yyyy")}</span>
+            <span className="inline-block h-1 w-1 rounded-full bg-gold-dark" />
+            <span>
+              {apt.start_time.slice(0, 5)} – {apt.end_time.slice(0, 5)}
+            </span>
+          </div>
+
+          {/* Price + deposit */}
+          <div className="mt-2.5 flex flex-wrap items-center gap-3">
+            <span
+              className={cn(
+                "text-[17px] font-bold tracking-tight",
+                isDeclined ? "text-destructive/70" : "text-primary",
+              )}
+            >
+              € {apt.price}
+            </span>
+
+            {apt.advance_payment > 0 && !isDeclined && (
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium",
+                  apt.advance_payment_paid
+                    ? "border-primary/30 bg-primary/5 text-primary"
+                    : "border-gold bg-gold-light text-gold-dark",
                 )}
-                {(apt.status === "pending" || apt.status === "accepted") && (
-                  <CancelAppointmentDialog id={apt.id} />
-                )}
-              </div>
+              >
+                <span
+                  className={cn(
+                    "h-1.5 w-1.5 rounded-full",
+                    apt.advance_payment_paid ? "bg-primary" : "bg-gold-dark",
+                  )}
+                />
+                Deposit € {apt.advance_payment} ·{" "}
+                {apt.advance_payment_paid ? "paid" : "not paid"}
+              </span>
             )}
           </div>
+
+          {/* Actions */}
+          {(depositUnpaid ||
+            apt.status === "pending" ||
+            apt.status === "accepted") && (
+            <div className="mt-3 flex flex-col sm:flex-row flex-wrap gap-2">
+              {depositUnpaid && (
+                <CheckoutButton
+                  id={apt.id}
+                  size="sm"
+                  type="appointment"
+                  text="Pay deposit"
+                  className="w-full sm:w-auto bg-gold text-accent-foreground hover:bg-gold-dark text-[12px] font-semibold"
+                />
+              )}
+              {(apt.status === "pending" || apt.status === "accepted") && (
+                <CancelAppointmentDialog id={apt.id} />
+              )}
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Declined reason footer */}
       {isDeclined && apt.notes && (
-        <div className="flex items-start gap-2.5 border-t border-destructive/20 bg-destructive/5 px-5 py-3">
+        <div className="flex items-start gap-2.5 border-t border-destructive/20 bg-destructive/5 px-5 py-3 pl-6">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-destructive" />
           <div>
-            <p className="text-xs font-semibold text-destructive">
-              Decline reason
-            </p>
+            <p className="text-xs font-bold text-destructive">Decline reason</p>
             <p className="mt-0.5 text-sm text-destructive/80">{apt.notes}</p>
           </div>
         </div>
       )}
 
+      {/* Note footer */}
       {hasNote && (
-        <div className="flex items-start gap-2.5 border-t border-blue-100 bg-blue-50 px-5 py-3">
-          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-500" />
+        <div className="flex items-start gap-2.5 border-t border-primary/15 bg-primary/5 px-5 py-3 pl-6">
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/60" />
           <div>
-            <p className="text-xs font-semibold text-blue-600">Note</p>
-            <p className="mt-0.5 text-sm text-blue-500/90">{apt.notes}</p>
+            <p className="text-xs font-bold text-primary">Note</p>
+            <p className="mt-0.5 text-sm text-primary/70">{apt.notes}</p>
           </div>
         </div>
       )}
