@@ -1,5 +1,5 @@
 import type { Course } from "@/types/Course";
-import { ArrowRight, BarChart3, Clock } from "lucide-react";
+import { ArrowRight, BarChart3, Clock, Users } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "../ui/button";
 
@@ -38,6 +38,19 @@ const CourseSmallCard = ({ course }: CourseSmallCardProps) => {
             <BarChart3 className="h-4 w-4" />
             <span className="capitalize"> {course.level}</span>
           </div>
+          {course.is_open && (
+            <span className="flex items-center gap-1.5">
+              <Users className="h-4 w-4" />
+              <span>
+                <span className="text-foreground font-medium">
+                  {course.remaining_spots}
+                </span>
+                <span className="text-muted-foreground">
+                  /{course.available_spots} spots left
+                </span>
+              </span>
+            </span>
+          )}
         </div>
 
         {/* mt-auto pushes footer to bottom */}
