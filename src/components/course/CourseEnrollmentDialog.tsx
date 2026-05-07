@@ -97,28 +97,28 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
     try {
       setLoading(true);
 
-      const { data, error } = await supabase.functions.invoke(
-        "create-enrollment",
-        {
-          body: {
-            course_id: course.id,
-            session_id: selectedSession,
-            user_id: user!.id,
-            payment_type: paymentType,
-            dob,
-            action_type: "create_enrollment",
-            price: course.course_session?.find((s) => s.id === selectedSession)
-              ?.price,
-            advance_price: course.course_session?.find(
-              (s) => s.id === selectedSession,
-            )?.advance_price,
-          },
+      const {
+        data: { data },
+        error,
+      } = await supabase.functions.invoke("create-enrollment", {
+        body: {
+          course_id: course.id,
+          session_id: selectedSession,
+          user_id: user!.id,
+          payment_type: paymentType,
+          dob,
+          action_type: "create_enrollment",
+          price: course.course_session?.find((s) => s.id === selectedSession)
+            ?.price,
+          advance_price: course.course_session?.find(
+            (s) => s.id === selectedSession,
+          )?.advance_price,
         },
-      );
+      });
 
       if (error) throw error;
 
-      const { checkout_url } = data?.data ?? data;
+      const { checkout_url } = data;
 
       if (checkout_url) {
         window.location.href = checkout_url;
