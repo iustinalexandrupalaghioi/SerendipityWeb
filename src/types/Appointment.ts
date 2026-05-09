@@ -1,5 +1,5 @@
 import type { Service } from "./Service";
-import type { User } from "./User";
+import type { Profile } from "./User";
 
 export const APPOINTMENT_STATUSES = [
   "pending",
@@ -30,6 +30,6 @@ export type Appointment = {
   created_at?: string;
   updated_at?: string;
   customerName: string;
-  profile?: User;
+  profile?: Profile;
   service: Service;
 };

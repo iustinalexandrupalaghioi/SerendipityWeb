@@ -1,4 +1,4 @@
-import type { User } from "./User";
+import type { Profile } from "./User";
 export type CourseLevel = "beginner" | "intermediate" | "advanced";
 
 export type Course = {
@@ -48,7 +48,7 @@ export type Enrollment = {
   id: string;
   session_id: string;
   user_id: string;
-  profile?: User;
+  profile?: Profile;
   status: EnrollmentStatus;
   enrollment_date: string;
   course_date: string;

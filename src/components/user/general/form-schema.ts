@@ -1,11 +1,7 @@
 import z from "zod";
 
 export const profileSchema = z.object({
-  firstName: z
-    .string()
-    .trim()
-    .min(2, "First name must be at least 2 characters"),
-  lastName: z.string().trim().min(2, "Last name must be at least 2 characters"),
+  fullName: z.string().trim().min(2, "Full name must be at least 2 characters"),
   email: z.email("Invalid email address").trim(),
   image: z.any().optional(),
 });
