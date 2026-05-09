@@ -172,9 +172,7 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
 
     const formattedDate = format(date, "yyyy-MM-dd");
 
-    const fullName =
-      user.user_metadata.full_name ??
-      user.user_metadata.first_name + " " + user.user_metadata.last_name; // Fallback if full_name is not available
+    const fullName = user.full_name;
 
     addAppointmentMutation.mutate({
       service_id: service.id,

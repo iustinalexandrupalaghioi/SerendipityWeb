@@ -21,8 +21,7 @@ import Loader from "@/components/ui/loader";
 import { FormCalendar } from "@/components/partials/FormCalendar";
 
 const profileSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  full_name: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email").optional(),
   date_of_birth: z.string().optional(),
 });
@@ -36,23 +35,16 @@ export default function UpdateUserProfileForm({
 }) {
   const { user, setUser } = useAuth();
   const [profileImagePreview, setProfileImagePreview] = useState<string>(
-    user?.user_metadata.avatar_url || defaultAvatar,
+    user?.avatar_url || defaultAvatar,
   );
   const [uploading, setUploading] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName:
-        user?.user_metadata.first_name ||
-        user?.user_metadata.full_name?.split(" ")[0] ||
-        "",
-      lastName:
-        user?.user_metadata.last_name ||
-        user?.user_metadata.full_name?.split(" ")[1] ||
-        "",
-      email: user?.email || "",
-      date_of_birth: user?.user_metadata.date_of_birth || "",
+      full_name: user?.full_name ?? "",
+      email: user?.email ?? "",
+      date_of_birth: user?.date_of_birth ?? "",
     },
   });
 
@@ -65,48 +57,42 @@ export default function UpdateUserProfileForm({
     const file = e.target.files?.[0];
     if (!file || !user) return;
 
-    const previewUrl = URL.createObjectURL(file);
-    setProfileImagePreview(previewUrl);
+    setProfileImagePreview(URL.createObjectURL(file));
 
     try {
       setUploading(true);
 
-      // Remove previous avatar
-      const previousAvatarPath = user.user_metadata.avatar_path;
-      if (previousAvatarPath) {
-        await supabase.storage.from("avatars").remove([previousAvatarPath]);
-      }
-
       const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+
+      // Remove previous avatar
+      if (user.avatar_url && user.avatar_url.includes("/avatars/")) {
+        const previousPath = user.avatar_url
+          .split("/avatars/")[1]
+          ?.split("?")[0];
+        if (previousPath) {
+          await supabase.storage.from("avatars").remove([previousPath]);
+        }
+      }
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(filePath, file, { upsert: true });
-
       if (uploadError) throw uploadError;
 
-      const { error } = await supabase.auth.updateUser({
-        data: { avatar_path: filePath },
-      });
-      if (error) throw error;
-
-      const { data: signedData } = await supabase.storage
+      // Use signed URL since bucket is private
+      const { data: signedData, error: signError } = await supabase.storage
         .from("avatars")
-        .createSignedUrl(filePath, 60 * 60);
+        .createSignedUrl(filePath, 60 * 60 * 24 * 7); // 7 days
+      if (signError) throw signError;
 
-      if (signedData) {
-        setUser({
-          ...user,
-          user_metadata: {
-            ...user.user_metadata,
-            avatar_path: filePath,
-            avatar_url: signedData.signedUrl,
-          },
-        });
-      }
+      const { error: updateError } = await supabase
+        .from("profile")
+        .update({ avatar_url: filePath })
+        .eq("id", user.id);
+      if (updateError) throw updateError;
 
+      setUser({ ...user, avatar_url: signedData.signedUrl });
       toast.success("Profile image updated successfully!");
     } catch {
       toast.error("Failed to update profile image");
@@ -119,15 +105,21 @@ export default function UpdateUserProfileForm({
     if (!user) return;
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        data: {
-          first_name: values.firstName,
-          last_name: values.lastName,
-          date_of_birth: values.date_of_birth,
-        },
-      });
+      const { error } = await supabase
+        .from("profile")
+        .update({
+          full_name: values.full_name,
+          date_of_birth: values.date_of_birth || null,
+        })
+        .eq("id", user.id);
 
       if (error) throw error;
+
+      setUser({
+        ...user,
+        full_name: values.full_name,
+        date_of_birth: values.date_of_birth ?? "",
+      });
       toast.success("Profile updated successfully!");
       handleEditToggle();
     } catch {
@@ -142,11 +134,15 @@ export default function UpdateUserProfileForm({
         className="flex flex-col md:flex-row gap-6 w-full items-start"
       >
         {/* Avatar */}
-        <div className=" relative flex flex-col items-center gap-2">
-          <div className=" h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-accent/30">
+        <div className="relative flex flex-col items-center gap-2">
+          <div className="h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-accent/30">
             <img
               src={profileImagePreview}
-              alt="Profile"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.src = defaultAvatar;
+              }}
+              alt="user"
               className="object-cover w-full h-full"
             />
             <label className="absolute bottom-0 right-0 p-2 rounded-full bg-gray-100 hover:bg-gray-200 cursor-pointer">
@@ -169,26 +165,12 @@ export default function UpdateUserProfileForm({
         <div className="flex-1 flex flex-col gap-4 w-full">
           <FormField
             control={form.control}
-            name="firstName"
+            name="full_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>First Name</FormLabel>
+                <FormLabel>Full name</FormLabel>
                 <FormControl>
-                  <Input placeholder="John" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Doe" {...field} />
+                  <Input placeholder="e.g. John Doe" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -222,7 +204,6 @@ export default function UpdateUserProfileForm({
             )}
           />
 
-          {/* Buttons */}
           <div className="flex gap-2 mt-4">
             <Button
               type="button"
@@ -239,7 +220,7 @@ export default function UpdateUserProfileForm({
             >
               {form.formState.isSubmitting ? (
                 <>
-                  <Loader2Icon className="animate-spin mr-2 h-4 w-4" />{" "}
+                  <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
                   Saving...
                 </>
               ) : (

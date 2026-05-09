@@ -30,7 +30,6 @@ function App() {
       <Route path="terms-and-conditions" element={<TermsAndConditions />} />
       <Route path="cookie-policy" element={<CookiePolicy />} />
       <Route path="privacy-policy" element={<PrivacyPolicy />} />
-      {/* Protected Routes */}
 
       <Route element={<Layout />}>
         <Route index element={<LandingPage />} />

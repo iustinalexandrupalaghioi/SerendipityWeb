@@ -19,8 +19,8 @@ const UserMenu = () => {
       <DropdownMenuTrigger>
         <Avatar>
           <AvatarImage
-            src={user?.user_metadata.avatar_url || userImage}
-            alt={`Profile image of user ${user?.email}`}
+            src={user?.avatar_url || userImage}
+            alt={`Profile image of user ${user?.full_name}`}
           />
           <AvatarFallback>{user?.email}</AvatarFallback>
         </Avatar>

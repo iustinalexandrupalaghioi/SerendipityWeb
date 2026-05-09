@@ -61,13 +61,9 @@ export function CourseEnrollmentDialog({ course, className }: Props) {
     if (!open) return;
 
     if (user) {
-      setFullName(
-        user.user_metadata.full_name
-          ? user.user_metadata.full_name.trim()
-          : `${user.user_metadata.first_name.trim()} ${user.user_metadata.last_name.trim()}`,
-      );
-      setEmail(user.email.trim() ?? "");
-      setDob(user.user_metadata?.date_of_birth ?? "");
+      setFullName(user.full_name);
+      setEmail(user.email ?? "");
+      setDob(user.date_of_birth ?? "");
     }
 
     setSelectedSession("");
