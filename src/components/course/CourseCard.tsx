@@ -124,25 +124,6 @@ const CourseCard = ({ course, index }: CourseCardProps) => {
                   € {course.advance_price}
                 </span>
               </span>
-              {course.is_open && (
-                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Users className="h-4 w-4" />
-                  <span>
-                    <span
-                      className={
-                        course.remaining_spots === 0
-                          ? "text-destructive font-medium"
-                          : "text-foreground font-medium"
-                      }
-                    >
-                      {course.remaining_spots}
-                    </span>
-                    <span className="text-muted-foreground">
-                      /{course.available_spots} spots left
-                    </span>
-                  </span>
-                </span>
-              )}
             </div>
             <div className="flex items-center gap-2">
               {course.is_open && (
