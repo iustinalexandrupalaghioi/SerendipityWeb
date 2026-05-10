@@ -36,11 +36,23 @@ const statusConfig: Record<
     icon: XCircle,
     label: "Cancelled",
   },
+  no_show: {
+    className: "bg-muted text-muted-foreground border-border",
+    icon: XCircle,
+    label: "No show",
+  },
+  expired: {
+    className: "bg-muted text-muted-foreground border-border",
+    icon: XCircle,
+    label: "Expired",
+  },
 };
 
 const EnrollmentCard = ({ enr }: { enr: Enrollment }) => {
   const { icon: StatusIcon, label, className } = statusConfig[enr.status];
-  const isCancelled = enr.status === "cancelled";
+  const isCancelled = ["cancelled", "no_show", "expired"].some(
+    (s) => s === enr.status,
+  );
   const depositUnpaid = !enr.advance_payment_paid && enr.status === "submitted";
 
   return (
