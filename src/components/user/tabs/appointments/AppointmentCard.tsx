@@ -50,6 +50,16 @@ const statusConfig: Record<
     icon: XCircle,
     label: "Cancelled",
   },
+  expired: {
+    className: "bg-muted text-muted-foreground border-border",
+    icon: XCircle,
+    label: "Expired",
+  },
+  no_show: {
+    className: "bg-muted text-muted-foreground border-border",
+    icon: XCircle,
+    label: "No show",
+  },
 };
 
 const AppointmentCard = ({ apt }: { apt: Appointment }) => {

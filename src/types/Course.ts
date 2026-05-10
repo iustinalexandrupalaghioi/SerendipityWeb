@@ -42,7 +42,9 @@ export type EnrollmentStatus =
   | "submitted"
   | "confirmed"
   | "cancelled"
-  | "completed";
+  | "completed"
+  | "expired"
+  | "no_show";
 
 export type Enrollment = {
   id: string;
