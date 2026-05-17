@@ -220,7 +220,7 @@ const BookingDialog = ({ service }: BookingDialogProps) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="md:min-w-2xl max-w-full mt-4 top-4 translate-y-0 px-2 md:px-4 max-h-[80vh] md:max-h-[90vh] flex flex-col overflow-hidden">
+      <DialogContent className="md:min-w-2xl max-w-full mt-4 top-4 translate-y-0 px-2 md:px-4 max-h-[90vh] md:max-h-[90vh] flex flex-col overflow-hidden">
         {bookingError ? (
           <div className="flex flex-col items-center py-8 text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
