@@ -22,28 +22,15 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Mobile Toggle */}
+        {/* Logo */}
+        <a href="/" className="flex items-center gap-2">
+          <img
+            src={Logo}
+            className="h-20 md:h-24 -my-18 md:-my-20 object-cover"
+            alt="GTA Nail Salon & Training Centre Logo"
+          />
+        </a>
 
-        <div className="flex items-center gap-2">
-          <button
-            className="md:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileOpen ? (
-              <X className="h-6 w-6 text-foreground" />
-            ) : (
-              <Menu className="h-6 w-6 text-foreground" />
-            )}
-          </button>
-          <a href="/" className="flex items-center gap-2">
-            <img
-              src={Logo}
-              className="h-20 md:h-24 -my-18 md:-my-20 object-cover"
-              alt="GTA Nail Salon & Training Centre Logo"
-            />
-          </a>
-        </div>
         {/* Desktop Nav */}
         <ul className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
@@ -62,6 +49,8 @@ export function Navbar() {
             </li>
           ))}
         </ul>
+
+        {/* Desktop Right */}
         <div className="hidden items-center gap-3 md:flex">
           {user ? <UserMenu /> : <AuthButton />}
           <Link to="/services">
@@ -73,7 +62,21 @@ export function Navbar() {
             </Button>
           </Link>
         </div>
-        <div className="md:hidden">{user ? <UserMenu /> : <AuthButton />}</div>
+
+        {/* Mobile Right — Auth + Menu Toggle grouped together */}
+        <div className="flex items-center gap-2 md:hidden">
+          {user ? <UserMenu /> : <AuthButton />}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileOpen ? (
+              <X className="h-6 w-6 text-foreground" />
+            ) : (
+              <Menu className="h-6 w-6 text-foreground" />
+            )}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu */}
@@ -97,7 +100,6 @@ export function Navbar() {
               </li>
             ))}
           </ul>
-
           <Link to="/services" onClick={() => setMobileOpen(false)}>
             <Button className="mt-4 w-full bg-primary text-primary-foreground hover:bg-primary/90">
               Book Now
