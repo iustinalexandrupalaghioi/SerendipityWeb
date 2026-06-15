@@ -289,32 +289,33 @@ export function SignUpForm({
                       <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
                         I agree to the{" "}
                         <Link
-                          to="/legal/terms"
+                          to="/terms-and-conditions"
                           target="_blank"
                           className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
                         >
                           Terms & Conditions
-                        </Link>
+                        </Link>{" "}
                         ,{" "}
-                      </FormLabel>{" "}
+                      </FormLabel>
+
                       <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
                         <Link
-                          to="/legal/privacy"
+                          to="/privacy-policy"
                           target="_blank"
                           className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
                         >
                           Privacy Policy
-                        </Link>
+                        </Link>{" "}
                         , and{" "}
-                      </FormLabel>{" "}
+                      </FormLabel>
                       <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
                         <Link
-                          to="/legal/cookies"
+                          to="/cookie-policy"
                           target="_blank"
                           className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
                         >
                           Cookie Policy
-                        </Link>{" "}
+                        </Link>
                       </FormLabel>
                     </div>
                     <FormMessage />
