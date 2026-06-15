@@ -1,6 +1,7 @@
 import FacebookIcon from "@/assets/icons/facebook.svg";
 import InstagramIcon from "@/assets/icons/instagram.svg";
 import Logo from "@/assets/logo/logo.png";
+import DarkLogo from "@/assets/logo/logo-dark.png";
 import TikTokIcon from "@/assets/icons/tiktok.svg";
 import { supabase } from "@/lib/supabaseClient";
 import type { BusinessHour } from "@/types/BusinessHour";
@@ -27,14 +28,20 @@ const Footer = () => {
   });
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto max-w-7xl px-6 py-16">
+      <div className="mx-auto max-w-7xl px-6 py-16 space-y-4">
         <div className="grid gap-12 md:grid-cols-3 lg:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-1">
             <a href="/" className="flex items-center gap-2">
               <img
                 src={Logo}
-                className="h-20 md:h-24  -my-6 object-cover"
+                className="h-20 md:h-24 -my-6 object-cover dark:hidden"
+                alt="GTA Nail Salon & Training Centre Logo"
+              />
+
+              <img
+                src={DarkLogo}
+                className="h-20 md:h-24 -my-6 object-cover hidden dark:block"
                 alt="GTA Nail Salon & Training Centre Logo"
               />
             </a>
@@ -109,11 +116,11 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2 text-sm text-foreground/70">
                 <a
-                  href="mailto:info@serendipitynailab.ie"
+                  href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL}`}
                   className="flex gap-2"
                 >
                   <Mail className="h-4 w-4 shrink-0" />
-                  info@serendipitynailab.ie
+                  {import.meta.env.VITE_CONTACT_EMAIL}
                 </a>
               </li>
               <li className="flex items-start gap-2 text-sm text-foreground/70">
@@ -187,8 +194,8 @@ const Footer = () => {
 
       <div className="mt-12 border-t border-primary-foreground/10 pt-8 text-center">
         <p className="text-xs text-foreground/50">
-          © {new Date().getFullYear()} GT Nail Lab & Training Centre. All rights
-          reserved.
+          © {new Date().getFullYear()} Giorgiana T Master Nail Educator Academy
+          & Nail Services. All rights reserved.
         </p>
       </div>
     </footer>

@@ -123,15 +123,15 @@ export function CourseDetailSection() {
         {courseHighlights.map((highlight, index) => (
           <div
             key={index}
-            className="group rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-gold/50 hover:shadow-lg hover:shadow-gold/5"
+            className="group rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-accent/30 hover:bg-accent/5"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-gold/20 group-hover:text-gold-dark">
-              <highlight.icon className="h-6 w-6" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/20 transition-all duration-300 group-hover:bg-accent/30">
+              <highlight.icon className="h-6 w-6 text-accent" />
             </div>
-            <h3 className="mt-4 text-lg font-semibold text-foreground">
+            <h3 className="mt-4 text-lg font-semibold text-foreground font-serif">
               {highlight.title}
             </h3>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-2 text-sm text-muted-foreground font-sans">
               {highlight.description}
             </p>
           </div>

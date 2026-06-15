@@ -28,6 +28,7 @@ import { Mail } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import Logo from "@/assets/logo/logo.png";
+import DarkLogo from "@/assets/logo/logo-dark.png";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -87,7 +88,12 @@ export function ForgotPasswordForm({
             <Link to="/">
               <img
                 src={Logo}
-                className="w-24 h-auto object-cover"
+                className="w-32 h-auto object-cover dark:hidden"
+                alt="Serendipity Nail Lab & Training Center by Georgiana Talpan Logo"
+              />
+              <img
+                src={DarkLogo}
+                className="w-32 h-auto object-cover hidden dark:block"
                 alt="Serendipity Nail Lab & Training Center by Georgiana Talpan Logo"
               />
             </Link>
@@ -120,7 +126,12 @@ export function ForgotPasswordForm({
           <Link to="/">
             <img
               src={Logo}
-              className="w-24 h-auto object-cover"
+              className="w-32 h-auto object-cover dark:hidden"
+              alt="Serendipity Nail Lab & Training Center by Georgiana Talpan Logo"
+            />
+            <img
+              src={DarkLogo}
+              className="w-32 h-auto object-cover hidden dark:block"
               alt="Serendipity Nail Lab & Training Center by Georgiana Talpan Logo"
             />
           </Link>
