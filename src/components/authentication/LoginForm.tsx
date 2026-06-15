@@ -28,13 +28,18 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Mail, LockIcon, Eye, EyeOff } from "lucide-react";
 import google from "@/assets/icons/google-icon-logo.svg";
 import Logo from "@/assets/logo/logo.png";
+import DarkLogo from "@/assets/logo/logo-dark.png";
 
 const loginSchema = z.object({
   email: z.email("Please enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
+  legal: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms to continue",
+  }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -52,8 +57,11 @@ export function LoginForm({
     defaultValues: {
       email: "",
       password: "",
+      legal: false,
     },
   });
+
+  const legalAccepted = form.watch("legal");
 
   const loginMutation = useMutation({
     mutationFn: async (values: LoginFormValues) => {
@@ -63,7 +71,6 @@ export function LoginForm({
     },
     onSuccess: () => {
       const from = location.state?.from || "/";
-
       navigate(from);
     },
   });
@@ -83,11 +90,14 @@ export function LoginForm({
 
   return (
     <div
-      className={cn("flex flex-col gap-6 max-w-96 mx-auto my-10", className)}
+      className={cn(
+        "flex flex-col gap-6 w-full max-w-md mx-auto px-4 py-10 sm:px-0",
+        className,
+      )}
       {...props}
     >
       <Card>
-        <CardHeader className="flex flex-col-reverse md:flex-row items-start justify-between md:items-center gap-2">
+        <CardHeader className="flex flex-col-reverse sm:flex-row items-start justify-between sm:items-center gap-2">
           <div className="flex flex-col gap-2">
             <CardTitle>Login to your account</CardTitle>
             <CardDescription>
@@ -97,8 +107,13 @@ export function LoginForm({
           <Link to="/">
             <img
               src={Logo}
-              className="w-24 h-auto object-cover"
-              alt="Serendipity Nail Lab & Training Center by Georgiana Talpan Logo"
+              className="w-28 h-auto object-cover dark:hidden"
+              alt="Serendipity Nail Lab & Training Center Logo"
+            />
+            <img
+              src={DarkLogo}
+              className="w-28 h-auto object-cover hidden dark:block"
+              alt="Serendipity Nail Lab & Training Center Logo"
             />
           </Link>
         </CardHeader>
@@ -179,6 +194,57 @@ export function LoginForm({
                 )}
               />
 
+              {/* Legal checkbox */}
+              <FormField
+                control={form.control}
+                name="legal"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-wrap items-start gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="mt-0.5"
+                        />
+                      </FormControl>
+                      <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
+                        I agree to the{" "}
+                        <Link
+                          to="/legal/terms"
+                          target="_blank"
+                          className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
+                        >
+                          Terms & Conditions
+                        </Link>{" "}
+                        ,{" "}
+                      </FormLabel>
+
+                      <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
+                        <Link
+                          to="/legal/privacy"
+                          target="_blank"
+                          className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
+                        >
+                          Privacy Policy
+                        </Link>{" "}
+                        , and{" "}
+                      </FormLabel>
+                      <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
+                        <Link
+                          to="/legal/cookies"
+                          target="_blank"
+                          className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
+                        >
+                          Cookie Policy
+                        </Link>
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {/* Error Message */}
               {loginMutation.isError && (
                 <p className="text-sm text-destructive text-center">
@@ -190,7 +256,7 @@ export function LoginForm({
               <Button
                 type="submit"
                 className="w-full"
-                disabled={loginMutation.isPending}
+                disabled={!legalAccepted || loginMutation.isPending}
               >
                 {loginMutation.isPending ? "Logging in..." : "Login"}
               </Button>
@@ -207,6 +273,7 @@ export function LoginForm({
                 type="button"
                 variant="outline"
                 className="w-full hover:bg-muted"
+                disabled={!legalAccepted}
                 onClick={loginWithGoogle}
               >
                 <img className="h-4 w-4" src={google} />

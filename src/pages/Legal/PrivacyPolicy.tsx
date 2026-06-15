@@ -1,196 +1,283 @@
+const sections = [
+  {
+    title: "1. Introduction",
+    content: [
+      'Giorgiana T Nail Lab & Training Centre ("we", "our", or "us") operates the website ' +
+        import.meta.env.VITE_ROOT_URL +
+        ' (the "Service").',
+      "This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our Service or use our services.",
+      "We are committed to protecting your personal data and complying with applicable data protection laws including the General Data Protection Regulation (GDPR).",
+      "If you do not agree with the terms of this Privacy Policy, please do not access the Service.",
+    ],
+  },
+  {
+    title: "2. Data Controller",
+    content: [
+      "The data controller responsible for your personal information is Giorgiana T Nail Lab & Training Centre, Clane, Ireland.",
+    ],
+    contact: true,
+  },
+  {
+    title: "3. Information We Collect",
+    subsections: [
+      {
+        heading: "Information You Provide",
+        items: [
+          "Full name",
+          "Email address",
+          "Date of birth (for course enrolments)",
+          "Information submitted through forms",
+        ],
+      },
+      {
+        heading: "Automatically Collected Information",
+        items: [
+          "IP address",
+          "Device type and browser information",
+          "Location data (approximate, based on IP)",
+          "Usage data and interaction with the Service",
+        ],
+      },
+      {
+        heading: "Information From Third-Party Login",
+        intro:
+          "If you log in using a social provider such as Google, we may receive:",
+        items: ["Name", "Email address", "Profile image"],
+      },
+    ],
+  },
+  {
+    title: "4. How We Use Your Information",
+    items: [
+      "To provide and maintain our Service",
+      "To process course enrolments",
+      "To process payments",
+      "To communicate with you regarding your bookings or account",
+      "To improve our services and website functionality",
+      "To prevent fraud and unauthorised activity",
+      "To comply with legal obligations",
+    ],
+  },
+  {
+    title: "5. Legal Basis for Processing (GDPR)",
+    content: [
+      "Under the General Data Protection Regulation, we rely on the following legal bases:",
+    ],
+    items: [
+      "Contractual necessity – processing necessary to provide services such as course enrolments.",
+      "Consent – when you voluntarily provide information or sign in using social login.",
+      "Legitimate interest – to improve our services and prevent fraud.",
+      "Legal obligation – when required by applicable law.",
+    ],
+  },
+  {
+    title: "6. Payments",
+    content: [
+      "Payments on our website are processed securely by Stripe. We do not store full payment card details on our servers. Payment information is processed directly by Stripe according to their security and privacy standards.",
+    ],
+  },
+  {
+    title: "7. Third-Party Services",
+    content: [
+      "We may use trusted third-party services to operate our platform, including payment processing providers, authentication providers such as Google, and hosting providers. These providers only receive the data necessary to perform their services.",
+    ],
+  },
+  {
+    title: "8. Cookies and Tracking Technologies",
+    content: [
+      "Our Service may use cookies and similar tracking technologies to provide essential website functionality, maintain login sessions, and improve user experience.",
+      "Cookies are small data files stored on your device. You can control or disable cookies through your browser settings.",
+    ],
+  },
+  {
+    title: "9. Data Retention",
+    content: [
+      "We retain your personal information only for as long as necessary to provide our services, maintain legal records, resolve disputes, and enforce our agreements.",
+    ],
+  },
+  {
+    title: "10. International Data Transfers",
+    content: [
+      "Some third-party providers may process data outside the European Economic Area. When this occurs, we ensure appropriate safeguards are in place in accordance with GDPR.",
+    ],
+  },
+  {
+    title: "11. Data Security",
+    content: [
+      "We implement reasonable technical and organisational measures designed to protect your personal data. However, no method of transmission over the Internet is completely secure.",
+    ],
+  },
+  {
+    title: "12. Your Data Protection Rights",
+    content: [
+      "Under GDPR you have the following rights regarding your personal data:",
+    ],
+    items: [
+      "Right to Access",
+      "Right to Rectification",
+      "Right to Erasure",
+      "Right to Restrict Processing",
+      "Right to Data Portability",
+      "Right to Object",
+    ],
+    rights: true,
+  },
+  {
+    title: "13. Children's Privacy",
+    content: [
+      "Our Service is not intended for individuals under the age of 18 without parental consent.",
+    ],
+  },
+  {
+    title: "14. Changes to This Privacy Policy",
+    content: [
+      'We may update this Privacy Policy from time to time. When we do, we will update the "Last Updated" date at the top of this page.',
+    ],
+  },
+];
+
 const PrivacyPolicy = () => {
   return (
-    <div className="max-w-4xl mx-auto py-10 space-y-6">
-      <h1 className="text-3xl font-bold">
-        Privacy Policy for GT Master Nail Educator
-      </h1>
-      <p>
-        <em>Last Updated: March 13, 2026</em>
-      </p>
+    <div className="mx-auto max-w-4xl px-6 py-16">
+      {/* Header */}
+      <div className="mb-12 border-b border-border pb-8">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">
+          Legal
+        </p>
+        <h1 className="mt-3 text-3xl font-bold text-foreground md:text-4xl">
+          Privacy Policy
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Giorgiana T Nail Lab & Training Centre · Clane, Ireland
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Last updated: June 2026
+        </p>
+        <p className="mt-4 text-base text-muted-foreground leading-relaxed">
+          This Privacy Policy explains how we collect, use, and protect your
+          personal information when you use our website or services.
+        </p>
+      </div>
 
-      <h2 className="text-xl font-semibold">1. Introduction</h2>
-      <p>
-        GT Master Nail Educator ("we", "our", or "us") operates the website{" "}
-        {import.meta.env.VITE_ROOT_URL} (the "Service").
-      </p>
-      <p>
-        This Privacy Policy explains how we collect, use, disclose, and
-        safeguard your information when you visit our Service or use our
-        services.
-      </p>
-      <p>
-        We are committed to protecting your personal data and complying with
-        applicable data protection laws including the General Data Protection
-        Regulation (GDPR).
-      </p>
-      <p>
-        If you do not agree with the terms of this Privacy Policy, please do not
-        access the Service.
-      </p>
+      {/* Sections */}
+      <div className="space-y-8">
+        {sections.map((section) => (
+          <div
+            key={section.title}
+            className="rounded-2xl border border-border bg-card p-6 md:p-8"
+          >
+            <h2 className="text-lg font-semibold text-foreground mb-4">
+              {section.title}
+            </h2>
 
-      <h2 className="text-xl font-semibold">2. Data Controller</h2>
-      <p>The data controller responsible for your personal information is:</p>
-      <p>
-        <strong>GT Master Nail Educator</strong>
-        <br />
-        Ireland
-        <br />
-        Email: {import.meta.env.VITE_CONTACT_EMAIL}
-      </p>
+            {/* Plain paragraphs */}
+            {section.content && (
+              <div className="space-y-3">
+                {section.content.map((p, i) => (
+                  <p
+                    key={i}
+                    className="text-sm text-muted-foreground leading-relaxed"
+                  >
+                    {p}
+                  </p>
+                ))}
+              </div>
+            )}
 
-      <h2 className="text-xl font-semibold">3. Information We Collect</h2>
+            {/* Contact block */}
+            {section.contact && (
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                Email:{" "}
+                <a
+                  href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL}`}
+                  className="text-accent underline underline-offset-2 hover:text-accent/80 transition-colors"
+                >
+                  {import.meta.env.VITE_CONTACT_EMAIL}
+                </a>
+              </p>
+            )}
 
-      <h3 className="font-semibold">Information You Provide</h3>
-      <ul className="list-disc ml-6">
-        <li>Full name</li>
-        <li>Email address</li>
-        <li>Date of birth (for course enrollments)</li>
-        <li>Information submitted through forms</li>
-      </ul>
+            {/* Subsections (section 3) */}
+            {section.subsections && (
+              <div className="space-y-5 mt-2">
+                {section.subsections.map((sub) => (
+                  <div key={sub.heading}>
+                    <p className="text-sm font-semibold text-foreground mb-2">
+                      {sub.heading}
+                    </p>
+                    {sub.intro && (
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {sub.intro}
+                      </p>
+                    )}
+                    <ul className="space-y-1">
+                      {sub.items.map((item) => (
+                        <li
+                          key={item}
+                          className="flex items-start gap-2 text-sm text-muted-foreground"
+                        >
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
 
-      <h3 className="font-semibold">Automatically Collected Information</h3>
-      <ul className="list-disc ml-6">
-        <li>IP address</li>
-        <li>Device type and browser information</li>
-        <li>Location data (approximate location based on IP)</li>
-        <li>Usage data and interaction with the Service</li>
-      </ul>
+            {/* Simple bullet list */}
+            {section.items && (
+              <ul className="mt-3 space-y-1">
+                {section.items.map((item) => (
+                  <li
+                    key={item}
+                    className="flex items-start gap-2 text-sm text-muted-foreground"
+                  >
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
 
-      <h3 className="font-semibold">Information From Third-Party Login</h3>
-      <p>
-        If you log in using a social provider such as Google, we may receive:
-      </p>
-      <ul className="list-disc ml-6">
-        <li>Name</li>
-        <li>Email address</li>
-        <li>Profile image</li>
-      </ul>
+            {/* Rights — with contact note */}
+            {section.rights && (
+              <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+                To exercise any of these rights, please contact us at{" "}
+                <a
+                  href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL}`}
+                  className="text-accent underline underline-offset-2 hover:text-accent/80 transition-colors"
+                >
+                  {import.meta.env.VITE_CONTACT_EMAIL}
+                </a>
+                . We will respond within 30 days.
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
 
-      <h2 className="text-xl font-semibold">4. How We Use Your Information</h2>
-      <ul className="list-disc ml-6">
-        <li>To provide and maintain our Service</li>
-        <li>To process course enrollments</li>
-        <li>To process payments</li>
-        <li>To communicate with you regarding your bookings or account</li>
-        <li>To improve our services and website functionality</li>
-        <li>To prevent fraud and unauthorized activity</li>
-        <li>To comply with legal obligations</li>
-      </ul>
-
-      <h2 className="text-xl font-semibold">
-        5. Legal Basis for Processing (GDPR)
-      </h2>
-      <p>
-        Under the General Data Protection Regulation, we rely on the following
-        legal bases:
-      </p>
-      <ul className="list-disc ml-6">
-        <li>
-          <strong>Contractual necessity</strong> – processing necessary to
-          provide services such as course enrollments.
-        </li>
-        <li>
-          <strong>Consent</strong> – when you voluntarily provide information or
-          sign in using social login.
-        </li>
-        <li>
-          <strong>Legitimate interest</strong> – to improve our services and
-          prevent fraud.
-        </li>
-        <li>
-          <strong>Legal obligation</strong> – when required by applicable law.
-        </li>
-      </ul>
-
-      <h2 className="text-xl font-semibold">6. Payments</h2>
-      <p>
-        Payments on our website are processed securely by Stripe. We do not
-        store full payment card details on our servers. Payment information is
-        processed directly by Stripe according to their security and privacy
-        standards.
-      </p>
-
-      <h2 className="text-xl font-semibold">7. Third-Party Services</h2>
-      <p>
-        We may use trusted third-party services to operate our platform,
-        including payment processing providers, authentication providers such as
-        Google, and hosting providers. These providers only receive the data
-        necessary to perform their services.
-      </p>
-
-      <h2 className="text-xl font-semibold">
-        8. Cookies and Tracking Technologies
-      </h2>
-      <p>
-        Our Service may use cookies and similar tracking technologies to provide
-        essential website functionality, maintain login sessions, and improve
-        user experience.
-      </p>
-      <p>
-        Cookies are small data files stored on your device. You can control or
-        disable cookies through your browser settings.
-      </p>
-
-      <h2 className="text-xl font-semibold">9. Data Retention</h2>
-      <p>
-        We retain your personal information only for as long as necessary to
-        provide our services, maintain legal records, resolve disputes, and
-        enforce our agreements.
-      </p>
-
-      <h2 className="text-xl font-semibold">
-        10. International Data Transfers
-      </h2>
-      <p>
-        Some third-party providers may process data outside the European
-        Economic Area. When this occurs, we ensure appropriate safeguards are in
-        place in accordance with GDPR.
-      </p>
-
-      <h2 className="text-xl font-semibold">11. Data Security</h2>
-      <p>
-        We implement reasonable technical and organizational measures designed
-        to protect your personal data. However, no method of transmission over
-        the Internet is completely secure.
-      </p>
-
-      <h2 className="text-xl font-semibold">12. Your Data Protection Rights</h2>
-      <ul className="list-disc ml-6">
-        <li>Right to Access</li>
-        <li>Right to Rectification</li>
-        <li>Right to Erasure</li>
-        <li>Right to Restrict Processing</li>
-        <li>Right to Data Portability</li>
-        <li>Right to Object</li>
-      </ul>
-
-      <p>
-        To exercise any of these rights, please contact us at{" "}
-        {import.meta.env.VITE_CONTACT_EMAIL}. We will respond within 30 days.
-      </p>
-
-      <h2 className="text-xl font-semibold">13. Children's Privacy</h2>
-      <p>
-        Our Service is not intended for individuals under the age of 18 without
-        parental consent.
-      </p>
-
-      <h2 className="text-xl font-semibold">
-        14. Changes to This Privacy Policy
-      </h2>
-      <p>
-        We may update this Privacy Policy from time to time. When we do, we will
-        update the "Last Updated" date at the top of this page.
-      </p>
-
-      <h2 className="text-xl font-semibold">15. Contact Us</h2>
-      <p>
-        If you have any questions about this Privacy Policy, please contact us:
-      </p>
-      <ul className="list-disc ml-6">
-        <li>Email: {import.meta.env.VITE_CONTACT_EMAIL}</li>
-        <li>Website: {import.meta.env.VITE_ROOT_URL}</li>
-      </ul>
+      {/* Footer note */}
+      <div className="mt-10 rounded-2xl border border-accent/20 bg-accent/5 p-6">
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          For questions about this Privacy Policy, contact us at{" "}
+          <a
+            href={`mailto:${import.meta.env.VITE_CONTACT_EMAIL}`}
+            className="text-accent underline underline-offset-2 hover:text-accent/80 transition-colors"
+          >
+            {import.meta.env.VITE_CONTACT_EMAIL}
+          </a>{" "}
+          or visit{" "}
+          <a
+            href={import.meta.env.VITE_ROOT_URL}
+            className="text-accent underline underline-offset-2 hover:text-accent/80 transition-colors"
+          >
+            {import.meta.env.VITE_ROOT_URL}
+          </a>
+          .
+        </p>
+      </div>
     </div>
   );
 };

@@ -22,17 +22,17 @@ function App() {
     <Routes>
       {/* Public Routes */}
       <Route path="/error" element={<ErrorPage />} />
-      <Route path="auth/login" element={<Login />} />
-      <Route path="auth/signup" element={<Signup />} />
-      <Route path="auth/signup-success" element={<SignupSuccess />} />
-      <Route path="auth/forgot-password" element={<ForgotPassword />} />
-      <Route path="auth/update-password" element={<UpdatePassword />} />
-      <Route path="terms-and-conditions" element={<TermsAndConditions />} />
-      <Route path="cookie-policy" element={<CookiePolicy />} />
-      <Route path="privacy-policy" element={<PrivacyPolicy />} />
 
       <Route element={<Layout />}>
         <Route index element={<LandingPage />} />
+        <Route path="auth/login" element={<Login />} />
+        <Route path="auth/signup" element={<Signup />} />
+        <Route path="auth/signup-success" element={<SignupSuccess />} />
+        <Route path="auth/forgot-password" element={<ForgotPassword />} />
+        <Route path="auth/update-password" element={<UpdatePassword />} />
+        <Route path="terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="cookie-policy" element={<CookiePolicy />} />
+        <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/courses" element={<CoursesPage />} />

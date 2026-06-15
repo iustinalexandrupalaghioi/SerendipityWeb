@@ -30,13 +30,13 @@ const UserMenu = () => {
 
         <DropdownMenuSeparator />
         <Link to="/profile/appointments">
-          <DropdownMenuItem className="focus:bg-muted">
+          <DropdownMenuItem className="focus:bg-muted dark:focus:bg-accent">
             Profile
           </DropdownMenuItem>
         </Link>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="h-8 focus:bg-muted">
+        <DropdownMenuItem className="h-8 focus:bg-muted  dark:focus:bg-accent">
           <LogoutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>

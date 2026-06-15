@@ -1,12 +1,14 @@
 import Logo from "@/assets/logo/logo.png";
+import DarkLogo from "@/assets/logo/logo-dark.png";
+
 import { AuthButton } from "@/components/authentication/AuthButton";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import UserMenu from "../user/general/UserMenu";
+import { ThemeSwitcher } from "@/components/partials/ThemeSwitcher";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -19,6 +21,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user } = useAuth();
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -26,7 +29,12 @@ export function Navbar() {
         <a href="/" className="flex items-center gap-2">
           <img
             src={Logo}
-            className="h-20 md:h-24 -my-18 md:-my-20 object-cover"
+            className="h-20 md:h-24 -my-18 md:-my-20 object-cover dark:hidden"
+            alt="GTA Nail Salon & Training Centre Logo"
+          />
+          <img
+            src={DarkLogo}
+            className="h-20 md:h-24 -my-18 md:-my-20 object-cover hidden dark:block"
             alt="GTA Nail Salon & Training Centre Logo"
           />
         </a>
@@ -53,14 +61,7 @@ export function Navbar() {
         {/* Desktop Right */}
         <div className="hidden items-center gap-3 md:flex">
           {user ? <UserMenu /> : <AuthButton />}
-          <Link to="/services">
-            <Button
-              size="sm"
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              Book now
-            </Button>
-          </Link>
+          <ThemeSwitcher />
         </div>
 
         {/* Mobile Right — Auth + Menu Toggle grouped together */}
@@ -81,7 +82,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="border-t border-border bg-background px-6 pb-6 pt-4 md:hidden">
+        <div className="border-t border-border bg-background px-6 pb-6 pt-4 md:hidden space-y-4">
           <ul className="flex flex-col gap-4">
             {navLinks.map((link) => (
               <li key={link.href}>
@@ -100,11 +101,7 @@ export function Navbar() {
               </li>
             ))}
           </ul>
-          <Link to="/services" onClick={() => setMobileOpen(false)}>
-            <Button className="mt-4 w-full bg-primary text-primary-foreground hover:bg-primary/90">
-              Book Now
-            </Button>
-          </Link>
+          <ThemeSwitcher />
         </div>
       )}
     </header>

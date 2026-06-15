@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff, LockIcon, User, Mail } from "lucide-react";
 import Logo from "@/assets/logo/logo.png";
+import DarkLogo from "@/assets/logo/logo-dark.png";
 import google from "@/assets/icons/google-icon-logo.svg";
 
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const signUpSchema = z
   .object({
@@ -43,6 +45,9 @@ const signUpSchema = z
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
       .regex(/[0-9]/, "Password must contain at least one number"),
     confirmPassword: z.string(),
+    legal: z.boolean().refine((val) => val === true, {
+      message: "You must accept the terms to continue",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -68,8 +73,11 @@ export function SignUpForm({
       email: "",
       password: "",
       confirmPassword: "",
+      legal: false,
     },
   });
+
+  const legalAccepted = form.watch("legal");
 
   const loginWithGoogle = async () => {
     await supabase.auth.signInWithOAuth({
@@ -107,11 +115,14 @@ export function SignUpForm({
 
   return (
     <div
-      className={cn("flex flex-col gap-6 max-w-96 mx-auto my-10", className)}
+      className={cn(
+        "flex flex-col gap-6 w-full max-w-md mx-auto px-4 py-10 sm:px-0",
+        className,
+      )}
       {...props}
     >
       <Card>
-        <CardHeader className="flex flex-col-reverse md:flex-row items-start justify-between md:items-center gap-2">
+        <CardHeader className="flex flex-col-reverse sm:flex-row items-start justify-between sm:items-center gap-2">
           <div className="flex flex-col gap-2">
             <CardTitle>Sign up with a new account</CardTitle>
             <CardDescription>
@@ -121,8 +132,13 @@ export function SignUpForm({
           <Link to="/">
             <img
               src={Logo}
-              className="w-24 h-auto object-cover"
-              alt="Serendipity Nail Lab & Training Center by Georgiana Talpan Logo"
+              className="w-28 h-auto object-cover dark:hidden"
+              alt="Serendipity Nail Lab & Training Center Logo"
+            />
+            <img
+              src={DarkLogo}
+              className="w-28 h-auto object-cover hidden dark:block"
+              alt="Serendipity Nail Lab & Training Center Logo"
             />
           </Link>
         </CardHeader>
@@ -256,11 +272,65 @@ export function SignUpForm({
                 )}
               />
 
+              {/* Legal checkbox */}
+              <FormField
+                control={form.control}
+                name="legal"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex flex-wrap items-start gap-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          className="mt-0.5"
+                        />
+                      </FormControl>
+                      <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
+                        I agree to the{" "}
+                        <Link
+                          to="/legal/terms"
+                          target="_blank"
+                          className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
+                        >
+                          Terms & Conditions
+                        </Link>
+                        ,{" "}
+                      </FormLabel>{" "}
+                      <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
+                        <Link
+                          to="/legal/privacy"
+                          target="_blank"
+                          className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
+                        >
+                          Privacy Policy
+                        </Link>
+                        , and{" "}
+                      </FormLabel>{" "}
+                      <FormLabel className="text-sm font-normal text-muted-foreground leading-snug cursor-pointer">
+                        <Link
+                          to="/legal/cookies"
+                          target="_blank"
+                          className="text-foreground underline underline-offset-4 hover:text-accent transition-colors"
+                        >
+                          Cookie Policy
+                        </Link>{" "}
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               {/* Error Message */}
               {error && <p className="text-sm text-destructive">{error}</p>}
 
               {/* Submit */}
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={!legalAccepted || isLoading}
+              >
                 {isLoading ? "Creating account..." : "Sign up"}
               </Button>
 
@@ -276,6 +346,7 @@ export function SignUpForm({
                 type="button"
                 variant="outline"
                 className="w-full hover:bg-muted"
+                disabled={!legalAccepted}
                 onClick={loginWithGoogle}
               >
                 <img className="h-4 w-4" src={google} />

@@ -110,21 +110,21 @@ export default function About() {
       </section>
 
       {/* Stats */}
-      <section className="relative overflow-hidden bg-primary py-20">
+      <section className="relative overflow-hidden py-20">
         <div className="relative mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="group text-center rounded-2xl border border-primary-foreground/10 bg-primary-foreground/5 p-8 transition-all duration-300 hover:border-accent/30 hover:bg-accent/5"
+                className="group text-center rounded-2xl border border-border bg-card p-8 transition-all duration-300 hover:border-accent/30 hover:bg-accent/5"
               >
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent/20 transition-all duration-300 group-hover:bg-accent/30">
                   <stat.icon className="h-7 w-7 text-accent" />
                 </div>
-                <p className="mt-4 text-4xl font-bold text-primary-foreground">
+                <p className="mt-4 text-4xl font-bold text-foreground">
                   {stat.value}
                 </p>
-                <p className="mt-1 text-sm text-primary-foreground/60">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {stat.label}
                 </p>
               </div>

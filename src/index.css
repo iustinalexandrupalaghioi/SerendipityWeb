@@ -45,60 +45,137 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ─── Light Theme ─────────────────────────────────────────────────────────── */
+/* Improved: warmer white background, more contrast on muted text, crisper
+   borders, and a slightly richer primary tint throughout. Gold & primary
+   are preserved exactly. */
 :root {
-  --background: oklch(0.9831 0.0029 308.43);
-  --foreground: oklch(0.1909 0.05181535821300986 305.0974912373324);
+  /* Backgrounds */
+  --background: oklch(0.975 0.004 308); /* slightly warmer than before */
+  --foreground: oklch(0.16 0.055 305); /* richer, deeper ink */
 
+  /* Cards — pure white for clear elevation above the background */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.1909 0.05181535821300986 305.0974912373324);
+  --card-foreground: oklch(0.16 0.055 305);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.1909 0.05181535821300986 305.0974912373324);
+  --popover-foreground: oklch(0.16 0.055 305);
 
+  /* Primary — unchanged */
   --primary: oklch(0.259 0.0966 303.17);
   --primary-foreground: oklch(0.9415 0.0292 84.59);
 
-  --secondary: oklch(0.9421 0.0077 308.37);
-  --secondary-foreground: oklch(0.2361 0.0725 304.5);
+  /* Secondary — a touch more purple-tinted so it reads as a family member */
+  --secondary: oklch(0.935 0.012 308);
+  --secondary-foreground: oklch(0.22 0.078 304);
 
-  --muted: oklch(0.9517 0.0044 308.41);
-  --muted-foreground: oklch(0.4912 0.0344 307.69);
+  /* Muted — lifted a little for readability */
+  --muted: oklch(0.948 0.006 308);
+  --muted-foreground: oklch(0.44 0.038 307); /* more contrast vs old 0.49 */
 
+  /* Accent — gold, unchanged */
   --accent: oklch(0.7966 0.1498 85.35);
   --accent-foreground: oklch(0.2063 0.0697 303.92);
 
   --destructive: oklch(0.6368 0.2078 25.33);
   --destructive-foreground: oklch(0.9848 0 0);
 
-  --border: oklch(0.9002 0.0133 308.3);
-  --input: oklch(0.9002 0.0133 308.3);
+  /* Borders — slightly more visible for crisp structure */
+  --border: oklch(0.878 0.018 308);
+  --input: oklch(0.878 0.018 308);
   --ring: oklch(0.259 0.0966 303.17);
 
+  /* Charts */
   --chart-1: oklch(0.45 0.15 285);
   --chart-2: oklch(0.72 0.17 85);
   --chart-3: oklch(0.6 0.09 285);
   --chart-4: oklch(0.82 0.12 85);
   --chart-5: oklch(0.5 0.12 285);
 
+  /* Gold scale — unchanged */
   --gold: oklch(0.7966 0.1498 85.35);
   --gold-light: oklch(0.9224 0.0528 89.01);
   --gold-dark: oklch(0.6686 0.1344 82.79);
 
-  --sidebar-background: oklch(0.9831 0.0029 308.43);
-  --sidebar-foreground: oklch(0.1909 0.05181535821300986 305.0974912373324);
-
+  /* Sidebar — same as page background; cards provide the pop */
+  --sidebar: oklch(0.96 0.006 308);
+  --sidebar-foreground: oklch(0.16 0.055 305);
   --sidebar-primary: oklch(0.259 0.0966 303.17);
   --sidebar-primary-foreground: oklch(0.9415 0.0292 84.59);
-
-  --sidebar-accent: oklch(0.9421 0.0077 308.37);
-  --sidebar-accent-foreground: oklch(0.2361 0.0725 304.5);
-
-  --sidebar-border: oklch(0.9002 0.0133 308.3);
+  --sidebar-accent: oklch(0.935 0.012 308);
+  --sidebar-accent-foreground: oklch(0.22 0.078 304);
+  --sidebar-border: oklch(0.878 0.018 308);
   --sidebar-ring: oklch(0.259 0.0966 303.17);
 
   --radius: 0.625rem;
 }
 
+/* ─── Dark Theme ─────────────────────────────────────────────────────────── */
+/* Deep cool-purple dark, not pure black. Primary and gold are preserved;
+   card surfaces step up in lightness to create visible elevation layers. */
+.dark {
+  /* Page background — deep purple-tinted near-black */
+  --background: oklch(0.138 0.032 305);
+  --foreground: oklch(0.94 0.012 308);
+
+  /* Cards — one clear step lighter than the background */
+  --card: oklch(0.185 0.038 305);
+  --card-foreground: oklch(0.94 0.012 308);
+
+  /* Popovers — slightly higher than card */
+  --popover: oklch(0.205 0.042 305);
+  --popover-foreground: oklch(0.94 0.012 308);
+
+  /* Primary — brighter purple so buttons are visible on dark surfaces */
+  --primary: oklch(0.42 0.14 303.17);
+  --primary-foreground: oklch(0.97 0.01 84.59);
+
+  /* Secondary — neutral-dark surface, high-contrast text */
+  --secondary: oklch(0.22 0.012 305); /* desaturated — barely tinted */
+  --secondary-foreground: oklch(
+    0.92 0.008 308
+  ); /* near-white, clearly legible */
+
+  /* Muted — dim surface for placeholders / disabled states */
+  --muted: oklch(0.205 0.035 305);
+  --muted-foreground: oklch(0.58 0.028 307);
+
+  /* Accent — gold, fully preserved */
+  --accent: oklch(0.7966 0.1498 85.35);
+  --accent-foreground: oklch(0.2063 0.0697 303.92);
+
+  --destructive: oklch(0.58 0.21 25);
+  --destructive-foreground: oklch(0.96 0 0);
+
+  /* Borders — subtle, just enough to define edges */
+  --border: oklch(0.28 0.042 305);
+  --input: oklch(0.255 0.04 305);
+  --ring: oklch(0.7966 0.1498 85.35); /* gold ring on dark = elegant */
+
+  /* Charts — slightly brightened so they pop on dark canvas */
+  --chart-1: oklch(0.62 0.18 285);
+  --chart-2: oklch(0.78 0.17 85);
+  --chart-3: oklch(0.52 0.14 285);
+  --chart-4: oklch(0.86 0.13 85);
+  --chart-5: oklch(0.68 0.15 285);
+
+  /* Gold scale — unchanged */
+  --gold: oklch(0.7966 0.1498 85.35);
+  --gold-light: oklch(0.9224 0.0528 89.01);
+  --gold-dark: oklch(0.6686 0.1344 82.79);
+
+  /* Sidebar — a touch darker than card to feel recessed */
+  --sidebar: oklch(0.162 0.035 305);
+  --sidebar-foreground: oklch(0.94 0.012 308);
+  --sidebar-primary: oklch(0.42 0.14 303.17);
+  --sidebar-primary-foreground: oklch(0.97 0.01 84.59);
+  --sidebar-accent: oklch(0.225 0.044 305);
+  --sidebar-accent-foreground: oklch(0.88 0.018 308);
+  --sidebar-border: oklch(0.265 0.04 305);
+  --sidebar-ring: oklch(0.7966 0.1498 85.35);
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -119,12 +196,11 @@ body {
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
     @apply bg-transparent text-white;
-    -webkit-box-shadow: 0 0 0px 1000px rgb(24 24 27 / 0.3) inset !important; /* dark bg */
+    -webkit-box-shadow: 0 0 0px 1000px rgb(24 24 27 / 0.3) inset !important;
     -webkit-text-fill-color: #fff !important;
     transition: background-color 9999s ease-in-out 0s !important;
   }
 
-  /* Optional: Adjust for light theme */
   :root input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px rgb(250 250 250 / 0.7) inset !important;
     -webkit-text-fill-color: #000 !important;
@@ -134,11 +210,12 @@ body {
     -webkit-box-shadow: 0 0 0px 1000px rgb(24 24 27 / 0.3) inset !important;
     -webkit-text-fill-color: #fff !important;
   }
+
   * {
     @apply border-border outline-ring/50;
     @apply scrollbar-thin;
   }
   * {
-    scrollbar-width: thin; /* Firefox thin scrollbar */
+    scrollbar-width: thin;
   }
 }
